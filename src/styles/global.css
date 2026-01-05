@@ -1,0 +1,37 @@
+@import url('https://fonts.googleapis.com/css2?family=Anton&family=Quicksand:wght@400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    background-color: theme('colors.brand.dark');
+    color: white;
+    font-family: theme('fontFamily.sans');
+    overscroll-behavior-y: none;
+  }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background-color: theme('colors.brand.dark');
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background-color: theme('colors.brand.surface');
+    border-radius: 9999px;
+    border: 1px solid theme('colors.brand.dark');
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background-color: theme('colors.brand.yellow');
+  }
+}

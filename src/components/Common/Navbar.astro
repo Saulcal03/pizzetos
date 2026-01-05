@@ -1,0 +1,65 @@
+---
+// Importamos imagen si tienes el logo, si no usamos texto por ahora
+// import logo from '../../assets/img/logopizzetos.webp';
+
+// 1. Agregamos la importación del componente de React
+import CartCounter from './CartCounter.jsx';
+---
+
+<header class="fixed top-0 w-full z-50 transition-all duration-300 bg-brand-dark/90 backdrop-blur-md border-b border-white/5">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex justify-between items-center h-20">
+      
+      <div class="flex-shrink-0 flex items-center gap-2">
+        <a href="#inicio" class="group">
+          <h1 class="font-display text-3xl tracking-wide text-brand-yellow uppercase group-hover:scale-105 transition-transform">
+            Pizzetos
+          </h1>
+        </a>
+      </div>
+
+      <nav class="hidden md:flex space-x-8">
+        {['Inicio', 'Menú', 'Paquetes', 'Sucursales'].map((item) => (
+          <a 
+            href={`#${item.toLowerCase()}`} 
+            class="text-sm font-bold text-white hover:text-brand-yellow transition-colors relative group"
+          >
+            {item}
+            <span class="absolute -bottom-1 left-0 w-0 h-0.5 bg-brand-yellow transition-all duration-300 group-hover:w-full"></span>
+          </a>
+        ))}
+      </nav>
+
+      <div class="hidden md:flex items-center">
+        <button id="cart-btn-desktop" class="bg-brand-yellow text-brand-dark px-5 py-2 rounded-full font-bold text-sm hover:shadow-neon hover:-translate-y-0.5 transition-all duration-300 flex items-center gap-2">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+          </svg>
+          Carrito 
+          <CartCounter client:load />
+        </button>
+      </div>
+      
+      <div class="md:hidden flex items-center">
+        <button class="text-white hover:text-brand-yellow p-2">
+          <svg class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+          </svg>
+        </button>
+      </div>
+
+    </div>
+  </div>
+</header>
+
+<script>
+  import { isCartOpen } from '../../stores/cartStore';
+
+  const btn = document.getElementById('cart-btn-desktop');
+  if (btn) {
+    btn.addEventListener('click', () => {
+      // Usamos .set(true) para abrir el carrito
+      isCartOpen.set(true); 
+    });
+  }
+</script>
