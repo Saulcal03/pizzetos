@@ -1,29 +1,32 @@
+// src/stores/cartStore.js
 import { atom, computed } from 'nanostores';
 
 // --- ESTADO BASE ---
 export const cartItems = atom([]);
-export const isCartOpen = atom(false); 
+export const isCartOpen = atom(false);
+export const isModalOpen = atom(false);
+export const currentProduct = atom(null);
+export const selectedGlobalSize = atom(null); // Para el selector "Pro" de tamaño
 
-// --- COMPUTED HELPERS (Opcional, pero útil para contadores) ---
-// Calcula cuántos items hay en total (para que CartCounter lo pueda usar fácil)
+// --- HELPERS ---
 export const cartCount = computed(cartItems, items => items.length);
 
-// --- ACCIONES ---
+// --- ACCIONES MODAL ---
+export function openProductModal(product) {
+  currentProduct.set(product);
+  isModalOpen.set(true);
+}
+
+export function closeProductModal() {
+  isModalOpen.set(false);
+  currentProduct.set(null);
+}
+
+// --- ACCIONES CARRITO ---
 export function addCartItem(item) {
   const currentItems = cartItems.get();
-  
-  // Generamos un ID único compatible con todos los navegadores
   const uniqueId = Math.random().toString(36).substring(2, 9) + Date.now().toString(36);
-
-  const newItem = {
-    ...item,
-    uniqueId: uniqueId,
-    addedAt: Date.now(),
-  };
-
-  // En esta lógica 2x1, guardamos cada item por separado (no sumamos cantidad)
-  // para poder parearlos después.
-  cartItems.set([...currentItems, newItem]);
+  cartItems.set([...currentItems, { ...item, uniqueId, addedAt: Date.now() }]);
 }
 
 export function removeCartItem(uniqueId) {
@@ -34,64 +37,69 @@ export function toggleCart(isOpen) {
   isCartOpen.set(isOpen !== undefined ? isOpen : !isCartOpen.get());
 }
 
-// --- LÓGICA MAESTRA 2x1 (COMPUTED) ---
-// Esta función recalcula los precios y agrupa pares automáticamente
+// --- LÓGICA MAESTRA 2x1 (CORREGIDA: AUTOMÁTICA) ---
 export const groupedCart = computed(cartItems, (items) => {
   let processedItems = [];
   let total = 0;
   
-  // 1. Separamos pizzas de especialidad (candidatas a 2x1) del resto
-  // Aseguramos que existan antes de filtrar para evitar errores
-  const specialtyPizzas = items.filter(i => (i.category === 'Especialidades' || i.type === 'specialty_pizza'));
-  const otherItems = items.filter(i => (i.category !== 'Especialidades' && i.type !== 'specialty_pizza'));
+  // 1. Tomamos TODAS las pizzas, sin importar si eligieron promo o individual
+  const allPizzas = items.filter(i => i.category === 'Pizzas' || i.category === 'Especialidades del Mar');
+  const otherItems = items.filter(i => i.category !== 'Pizzas' && i.category !== 'Especialidades del Mar');
 
-  // 2. Agrupamos por tamaño para encontrar pares
-  const pizzasBySize = {
-    'Familiar': specialtyPizzas.filter(p => p.size === 'Familiar'), // Asumiendo que 'size' viene en el item, si no, usa un default
-    'Grande': specialtyPizzas.filter(p => p.size === 'Grande'),
-    'Mediana': specialtyPizzas.filter(p => p.size === 'Mediana'),
-    'Chica': specialtyPizzas.filter(p => p.size === 'Chica'),
-    'N/A': specialtyPizzas.filter(p => !p.size) // Para capturar las que no tengan tamaño definido
-  };
+  // 2. Las agrupamos por tamaño
+  const pizzasBySize = {};
+  allPizzas.forEach(p => {
+    // Si por error no trae size, lo mandamos a 'General'
+    const size = p.size || 'General';
+    if (!pizzasBySize[size]) pizzasBySize[size] = [];
+    pizzasBySize[size].push(p);
+  });
 
-  // 3. Procesamos los pares (2x1)
+  // 3. Emparejamos automáticamente (Estrategia: El usuario siempre gana)
   Object.keys(pizzasBySize).forEach(size => {
-    const list = [...pizzasBySize[size]]; // Copia de la lista
+    const list = [...pizzasBySize[size]];
     
+    // Ordenamos por precio para emparejar las más caras juntas (o estrategia que prefieras)
+    // Aquí simplemente vamos tomando de 2 en 2
     while (list.length > 0) {
       const pizza1 = list.shift();
       
       if (list.length > 0) {
-        // ¡Tenemos PAREJA! (2x1)
+        // --- TENEMOS PAREJA (2x1) ---
         const pizza2 = list.shift();
-        const pairPrice = Math.max(pizza1.price, pizza2.price); 
+        
+        // Precio: La más cara de las dos define el precio del par (lógica estándar)
+        // Usamos priceFull porque es el precio de lista sin descuento
+        const pairPrice = Math.max(pizza1.priceFull, pizza2.priceFull); 
         
         processedItems.push({
           type: 'promo_pair',
-          title: `2x1 ${pizza1.name} y ${pizza2.name}`, // Título combinado
+          title: `2x1: ${pizza1.name} y ${pizza2.name}`,
+          size: size,
           items: [pizza1, pizza2],
           price: pairPrice,
           uniqueId: `pair-${pizza1.uniqueId}`
         });
         total += pairPrice;
       } else {
-        // Pizza HUÉRFANA (Aplica 40% descuento individual)
-        // Precio original * 0.6 = Precio con 40% de descuento
-        const discountPrice = Math.round(pizza1.price * 0.6); 
+        // --- PIZZA SOLA (Individual con Descuento) ---
+        // Al quedar sola, le aplicamos el descuento del 40% automáticamente
+        // Aunque el usuario haya marcado "Promo", si está sola, le cobramos barato.
+        const individualPrice = Math.round(pizza1.priceFull * 0.6);
         
         processedItems.push({
           ...pizza1,
-          displayPrice: discountPrice, // Precio visual con descuento
-          originalPrice: pizza1.price,
-          isDiscounted: true,
-          uniqueId: pizza1.uniqueId
+          displayPrice: individualPrice, 
+          isWaitingPair: true, // Para mostrar aviso visual
+          uniqueId: pizza1.uniqueId,
+          price: individualPrice // Aseguramos que el total sume el precio con descuento
         });
-        total += discountPrice;
+        total += individualPrice;
       }
     }
   });
 
-  // 4. Agregamos el resto de cosas (Refrescos, etc) sin cambios
+  // 4. Agregamos el resto de cosas
   otherItems.forEach(item => {
     processedItems.push(item);
     total += item.price;

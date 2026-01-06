@@ -1,30 +1,82 @@
 ---
-import '../styles/global.css';
-// 1. Importamos el componente del carrito (IMPORTANTE)
-import CartFlyout from '../components/Cart/CartFlyout.jsx';
+// src/layouts/Layout.astro
+// src/layouts/Layout.astro
 
-interface Props {
-    title: string;
-}
+// 1. CORREGIMOS LAS RUTAS AQUÍ (Agregamos /Common/)
+import Navbar from '../components/Common/Navbar.astro';
+import Footer from '../components/Common/Footer.astro'; 
+
+import CartFlyout from '../components/Cart/CartFlyout.jsx';
+import ProductModal from '../components/Menu/ProductModal.jsx'; 
 
 const { title } = Astro.props;
 ---
 
 <!doctype html>
-<html lang="es" class="scroll-smooth">
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="description" content="Pizzetos Pizza - La mejor pizza a domicilio" />
-        <meta name="viewport" content="width=device-width" />
-        <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-        <link rel="preconnect" href="https://fonts.googleapis.com">
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link href="https://fonts.googleapis.com/css2?family=Anton&family=Quicksand:wght@400;600;700&display=swap" rel="stylesheet">
-        <title>{title}</title>
-    </head>
-    <body class="bg-brand-dark text-white font-sans antialiased selection:bg-brand-yellow selection:text-brand-dark">
-        <slot />
-        
-        <CartFlyout client:idle />
-    </body>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="description" content="Pizzetos Pizza - Sabor Artesanal" />
+    <meta name="viewport" content="width=device-width" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <title>{title}</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+  </head>
+  
+  <body class="bg-neutral-950 text-white font-body">
+    
+    <Navbar />
+    
+    <slot />
+
+    <Footer />
+
+    <CartFlyout client:load />
+    <ProductModal client:load />
+
+  </body>
 </html>
+
+<style is:global>
+  /* Tus estilos globales básicos */
+  :root {
+    --font-heading: 'Playfair Display', serif;
+    --font-body: 'Lato', sans-serif;
+  }
+  html {
+    scroll-behavior: smooth;
+  }
+  
+  /* Animaciones útiles */
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  
+  .animate-fadeIn {
+    animation: fadeIn 0.3s ease-out forwards;
+  }
+  .animate-fade-in-up {
+    animation: fadeInUp 0.4s ease-out forwards;
+  }
+  
+  /* Scrollbar personalizada para el modal */
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 6px;
+  }
+  .custom-scrollbar::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.05);
+  }
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 10px;
+  }
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.4);
+  }
+</style>

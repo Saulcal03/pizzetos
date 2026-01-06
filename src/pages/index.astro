@@ -1,151 +1,297 @@
 ---
+// src/pages/index.astro
 import Layout from '../layouts/Layout.astro';
-import Navbar from '../components/Common/Navbar.astro';
-import Footer from '../components/Common/Footer.astro';
-import ProductCard from '../components/Menu/ProductCard.astro';
+import MenuCard from '../components/Menu/MenuCard.astro';
+import SizeSelector from '../components/Menu/SizeSelector.jsx';
+import { menuItems } from '../data/menuData.js'; 
 
-// --- DATOS DE EJEMPLO (Basados en tu archivo original) ---
-// En el futuro, esto lo moveremos a un archivo src/data/menu.js
-const menuItems = [
-  {
-    id: 'hawaiana',
-    name: 'Hawaiana',
-    description: 'La clásica combinación de Jamón y Piña fresca.',
-    price: 375, // Precio Familiar base
-    imageSrc: 'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80', // Placeholder de alta calidad
-    category: 'Especialidades'
-  },
-  {
-    id: 'pepperoni',
-    name: 'Pepperoni',
-    description: 'Doble porción de Pepperoni y abundante queso mozzarella.',
-    price: 375,
-    imageSrc: 'https://images.unsplash.com/photo-1628840042765-356cda07504e?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80',
-    category: 'Especialidades'
-  },
-  {
-    id: 'mexicana',
-    name: 'Mexicana',
-    description: 'Pierna, Pollo, Jalapeño y Aguacate selecto.',
-    price: 375,
-    imageSrc: 'https://images.unsplash.com/photo-1628840042765-356cda07504e?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80', // Placeholder
-    category: 'Especialidades'
-  },
-  {
-    id: 'camaron',
-    name: 'Camarón',
-    description: 'Deliciosos camarones salteados sobre base de queso.',
-    price: 480,
-    imageSrc: 'https://images.unsplash.com/photo-1513104890138-7c749659a591?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80',
-    category: 'Mariscos',
-    isPromo: false // Las de mariscos suelen ser precio diferente
-  }
-];
+const allItems = menuItems || [];
+
+// 1. SEPARAMOS LOS DATOS
+const pizzas = allItems.filter(i => i.category === 'Pizzas' || i.category === 'Especialidades del Mar');
+const paquetes = allItems.filter(i => i.category === 'Paquetes');
+const snacks = allItems.filter(i => i.category === 'Snacks');
+const bebidas = allItems.filter(i => i.category === 'Bebidas');
+
+// Unimos todo lo "Extra" para la vista de complementos
+const extras = [...paquetes, ...snacks, ...bebidas];
+// Categorías para los botones de filtro de extras
+const extraCategories = ["Todos", "Paquetes", "Snacks", "Bebidas"];
 ---
 
-<Layout title="Pizzetos Pizza | Pide Online">
-  <Navbar />
-
-  <main>
-    <section id="inicio" class="relative h-[80vh] min-h-[600px] flex items-center justify-center overflow-hidden">
-      <div class="absolute inset-0 z-0">
-        <img 
-          src="https://images.unsplash.com/photo-1571997478779-2adcbbe9ab2f?ixlib=rb-1.2.1&auto=format&fit=crop&w=1920&q=80" 
-          alt="Banner Pizzetos" 
-          class="w-full h-full object-cover"
-        />
-        <div class="absolute inset-0 bg-gradient-to-b from-brand-dark/70 via-brand-dark/50 to-brand-dark"></div>
-      </div>
-
-      <div class="relative z-10 text-center px-4 max-w-4xl mx-auto mt-20">
-        <span class="text-brand-yellow font-bold tracking-[0.2em] uppercase text-sm md:text-base animate-fade-in-up">
-          La mejor pizza de la ciudad
-        </span>
-        <h1 class="font-display text-5xl md:text-7xl lg:text-8xl text-white mt-4 mb-6 leading-tight drop-shadow-2xl">
-          PIZZETOS <br /> <span class="text-transparent bg-clip-text bg-gradient-to-r from-brand-yellow to-yellow-500">PIZZA</span>
-        </h1>
-        <p class="text-gray-300 text-lg md:text-xl mb-10 max-w-2xl mx-auto font-light">
-          Ingredientes frescos, masa artesanal y el sabor que ya conoces. 
-          Pide ahora y recibe tu 2x1 en especialidades.
-        </p>
-        <div class="flex flex-col sm:flex-row gap-4 justify-center">
-          <a href="#menu" class="bg-brand-yellow text-brand-dark px-8 py-4 rounded-full font-bold text-lg shadow-neon hover:scale-105 transition-transform duration-300">
-            Ver Menú
-          </a>
-          <a href="#paquetes" class="bg-white/10 backdrop-blur-md border border-white/20 text-white px-8 py-4 rounded-full font-bold text-lg hover:bg-white/20 transition-colors duration-300">
-            Ver Paquetes
-          </a>
-        </div>
-      </div>
+<Layout title="Pizzetos | Menú Premium">
+  <main class="bg-neutral-950 min-h-screen pb-20 relative font-body">
+    
+    <section class="pt-8 pb-4 text-center px-4 sticky top-0 z-50 bg-neutral-950/80 backdrop-blur-md border-b border-white/5">
+      <h1 class="text-4xl md:text-5xl font-black text-white font-serif italic tracking-tighter cursor-pointer hover:text-amber-500 transition-colors" onclick="window.location.reload()">
+        Pizzetos<span class="text-amber-500">.</span>
+      </h1>
     </section>
 
-    <section id="menu" class="py-20 bg-brand-dark relative">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div id="screen-sizes" class="transition-all duration-500 opacity-100 transform translate-x-0 pt-4">
+      <SizeSelector client:load />
+      
+      <div class="text-center mt-8 animate-fade-in-up" style="animation-delay: 0.2s;">
+        <p class="text-neutral-500 mb-6 text-sm uppercase tracking-widest font-bold">¿No quieres pizza?</p>
+        <div class="flex flex-wrap justify-center gap-4">
+            <button id="btn-show-extras" class="group relative px-8 py-3 rounded-full bg-white/5 border border-white/10 overflow-hidden hover:border-amber-500/50 transition-all">
+                <span class="relative z-10 text-white font-bold text-sm group-hover:text-amber-500 transition-colors">Ver Paquetes y Snacks</span>
+                <div class="absolute inset-0 bg-white/5 transform scale-x-0 group-hover:scale-x-100 transition-transform origin-left"></div>
+            </button>
+        </div>
+      </div>
+    </div>
+
+    <div id="screen-flavors" class="hidden opacity-0 transform translate-x-10 transition-all duration-500 max-w-7xl mx-auto px-4 pt-4">
+      
+      <div class="sticky top-24 z-40 bg-neutral-950/95 backdrop-blur-xl py-4 -mx-4 px-4 border-b border-white/10 mb-8 shadow-2xl">
         
-        <div class="text-center mb-16">
-          <h2 class="font-display text-4xl md:text-5xl text-white mb-4">
-            Nuestras <span class="text-brand-yellow border-b-4 border-brand-yellow pb-1">Especialidades</span>
-          </h2>
-          <p class="text-brand-gray mt-4 text-lg">
-            Compra una pizza con 40% de descuento o arma tu par 2x1.
-          </p>
-        </div>
-
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-          {menuItems.map((pizza) => (
-            <div class="h-full">
-<ProductCard
-  id={pizza.id}
-  name={pizza.name}
-  description={pizza.description}
-  price={pizza.price}
-  imageSrc={pizza.imageSrc}
-  category={pizza.category}  isPromo={pizza.category === 'Especialidades'}
-/>
+        <div class="flex items-center justify-between mb-4">
+          <button id="btn-back-sizes" class="flex items-center gap-2 text-neutral-400 hover:text-white transition-colors group">
+            <div class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center group-hover:bg-amber-500 group-hover:text-black transition-all">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" /></svg>
             </div>
-          ))}
-        </div>
-
-        <div class="mt-16 text-center">
-          <button class="text-white border-2 border-white/20 px-8 py-3 rounded-full hover:bg-white hover:text-brand-dark hover:border-white transition-all duration-300 font-bold tracking-wide">
-            Ver Menú Completo
+            <span class="text-xs font-bold uppercase tracking-widest hidden sm:inline">Cambiar Tamaño</span>
           </button>
+          
+          <div class="text-right">
+            <span class="text-[10px] text-neutral-500 uppercase tracking-widest block">Estás pidiendo</span>
+            <span id="display-selected-size" class="text-xl font-serif text-amber-500 italic font-bold">--</span>
+          </div>
         </div>
 
-      </div>
-    </section>
+        <div class="flex flex-col md:flex-row gap-4 items-center justify-between">
+            
+            <div class="relative w-full md:w-1/3">
+                <input type="text" id="pizza-search" placeholder="Buscar sabor (ej: Hawaiana)..." 
+                    class="w-full bg-white/5 border border-white/10 rounded-full py-2 pl-10 pr-4 text-white text-sm focus:outline-none focus:border-amber-500 focus:bg-white/10 transition-all"
+                >
+                <svg class="absolute left-3 top-2.5 h-4 w-4 text-neutral-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+            </div>
 
-    <section id="paquetes" class="py-20 bg-brand-surface border-y border-white/5">
-      <div class="max-w-7xl mx-auto px-4 text-center">
-        <h3 class="font-display text-4xl text-white mb-12">Paquetes Populares</h3>
+            <div class="flex gap-2 overflow-x-auto pb-1 md:pb-0 w-full md:w-auto scrollbar-hide">
+                <button class="cat-btn active" data-filter="all">Todas</button>
+                <button class="cat-btn" data-filter="Pizzas">Clásicas</button>
+                <button class="cat-btn" data-filter="Especialidades del Mar">Del Mar</button>
+            </div>
+        </div>
+      </div>
+
+      <div id="pizza-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 pb-20">
+        {pizzas.map((item) => (
+          <div class="pizza-item" data-name={item.name.toLowerCase()} data-category={item.category}>
+            <MenuCard 
+              id={item.id} name={item.name} description={item.description} 
+              price={item.price} image={item.image} category={item.category}
+              prices={item.prices} type={item.type}
+            />
+          </div>
+        ))}
+      </div>
+
+      <div id="no-pizza-results" class="hidden text-center py-20">
+        <p class="text-neutral-500 text-lg">No encontramos pizzas con ese nombre.</p>
+        <button onclick="document.getElementById('pizza-search').value = ''; document.getElementById('pizza-search').dispatchEvent(new Event('input'));" class="text-amber-500 hover:underline mt-2">Borrar búsqueda</button>
+      </div>
+
+    </div>
+
+    <div id="screen-extras" class="hidden opacity-0 transform translate-y-10 transition-all duration-500 max-w-7xl mx-auto px-4 pt-4">
         
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
-            <div class="bg-brand-dark p-6 rounded-2xl border border-white/5 flex flex-col items-center hover:border-brand-yellow/50 transition-colors cursor-pointer group">
-                <div class="w-full h-40 bg-gray-800 rounded-xl mb-4 overflow-hidden relative">
-                    <div class="absolute inset-0 bg-brand-yellow/10 group-hover:bg-brand-yellow/20 transition-colors flex items-center justify-center">
-                        <span class="font-display text-brand-yellow text-4xl">P1</span>
-                    </div>
+        <div class="flex items-center mb-8">
+            <button id="btn-back-home" class="flex items-center gap-2 text-neutral-400 hover:text-white transition-colors group">
+                <div class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center group-hover:bg-amber-500 group-hover:text-black transition-all">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" /></svg>
                 </div>
-                <h4 class="text-xl font-bold text-white">Paquete 1</h4>
-                <p class="text-brand-gray text-sm my-2">2 Pizzas (Hawaiana/Pepperoni) + Refresco</p>
-                <span class="text-brand-yellow font-display text-2xl mt-auto">$295</span>
-            </div>
-
-            <div class="bg-brand-dark p-6 rounded-2xl border border-white/5 flex flex-col items-center hover:border-brand-yellow/50 transition-colors cursor-pointer group">
-                 <div class="w-full h-40 bg-gray-800 rounded-xl mb-4 overflow-hidden relative">
-                    <div class="absolute inset-0 bg-brand-yellow/10 group-hover:bg-brand-yellow/20 transition-colors flex items-center justify-center">
-                        <span class="font-display text-brand-yellow text-4xl">P3</span>
-                    </div>
-                </div>
-                <h4 class="text-xl font-bold text-white">Paquete 3</h4>
-                <p class="text-brand-gray text-sm my-2">3 Pizzas Grandes Especialidad + Refresco</p>
-                <span class="text-brand-yellow font-display text-2xl mt-auto">$395</span>
-            </div>
+                <span class="text-sm font-bold uppercase tracking-widest">Volver al Inicio</span>
+            </button>
         </div>
-      </div>
-    </section>
+
+        <h2 class="text-3xl font-serif text-white italic mb-8 text-center">Complementos</h2>
+
+        <div class="flex justify-center gap-2 mb-10">
+            {extraCategories.map(cat => (
+                <button class="extra-cat-btn px-4 py-2 rounded-full border border-white/10 text-xs font-bold uppercase text-neutral-400 hover:text-white hover:border-amber-500 transition-all" data-filter={cat}>
+                    {cat}
+                </button>
+            ))}
+        </div>
+
+        <div id="extras-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 pb-20">
+            {extras.map((item) => (
+                <div class="extra-item" data-category={item.category}>
+                    <MenuCard 
+                        id={item.id} name={item.name} description={item.description} 
+                        price={item.price} image={item.image} category={item.category}
+                        prices={item.prices} type={item.type}
+                    />
+                </div>
+            ))}
+        </div>
+    </div>
 
   </main>
-
-  <Footer />
 </Layout>
+
+<style>
+    .cat-btn {
+        padding: 8px 16px;
+        border-radius: 999px;
+        font-size: 0.8rem;
+        font-weight: bold;
+        text-transform: uppercase;
+        color: #737373;
+        border: 1px solid rgba(255,255,255,0.1);
+        transition: all 0.3s ease;
+        white-space: nowrap;
+    }
+    .cat-btn:hover { color: white; border-color: rgba(255,255,255,0.3); }
+    .cat-btn.active {
+        background-color: #f59e0b;
+        color: #171717;
+        border-color: #f59e0b;
+        box-shadow: 0 0 15px rgba(245, 158, 11, 0.2);
+    }
+    /* Ocultar barra scroll en movil */
+    .scrollbar-hide::-webkit-scrollbar { display: none; }
+    .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+</style>
+
+<script>
+  import { selectedGlobalSize } from '../stores/cartStore.js';
+
+  function initAppLogic() {
+    // Referencias
+    const screenSizes = document.getElementById('screen-sizes');
+    const screenFlavors = document.getElementById('screen-flavors');
+    const screenExtras = document.getElementById('screen-extras');
+    
+    const displaySize = document.getElementById('display-selected-size');
+    const btnBackSizes = document.getElementById('btn-back-sizes');
+    const btnShowExtras = document.getElementById('btn-show-extras');
+    const btnBackHome = document.getElementById('btn-back-home');
+
+    // --- 1. NAVEGACIÓN ENTRE PANTALLAS ---
+    
+    const showScreen = (screenId) => {
+        // Ocultar todo
+        [screenSizes, screenFlavors, screenExtras].forEach(s => {
+            s.classList.add('hidden', 'opacity-0', 'pointer-events-none');
+            // Reset transforms
+            s.classList.remove('translate-x-0', 'translate-y-0');
+        });
+
+        const target = document.getElementById(screenId);
+        target.classList.remove('hidden');
+        
+        // Animación de entrada
+        setTimeout(() => {
+            target.classList.remove('opacity-0', 'pointer-events-none');
+            target.classList.add('translate-x-0', 'translate-y-0');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }, 50);
+    };
+
+    // Escuchar cambios de tamaño (Cerebro)
+    selectedGlobalSize.subscribe(size => {
+        if (size) {
+            if(displaySize) displaySize.textContent = size;
+            showScreen('screen-flavors');
+        } else {
+            // Si se quita el tamaño, volvemos al inicio (pero solo si no estamos viendo extras)
+            if(!screenExtras.classList.contains('opacity-100')) {
+                showScreen('screen-sizes');
+            }
+        }
+    });
+
+    // Botón "Atrás" en Pizzas
+    btnBackSizes?.addEventListener('click', () => selectedGlobalSize.set(null));
+
+    // Botón "Ver Paquetes"
+    btnShowExtras?.addEventListener('click', () => {
+        selectedGlobalSize.set(null); // Aseguramos reset
+        showScreen('screen-extras');
+    });
+
+    // Botón "Volver al Inicio" desde Extras
+    btnBackHome?.addEventListener('click', () => showScreen('screen-sizes'));
+
+
+    // --- 2. LÓGICA DE BÚSQUEDA Y FILTROS (PIZZAS) ---
+    const searchInput = document.getElementById('pizza-search');
+    const catButtons = document.querySelectorAll('.cat-btn');
+    const pizzaItems = document.querySelectorAll('.pizza-item');
+    const noResults = document.getElementById('no-pizza-results');
+
+    let currentFilter = 'all';
+
+    const filterPizzas = () => {
+        const term = searchInput.value.toLowerCase();
+        let count = 0;
+
+        pizzaItems.forEach(item => {
+            const name = item.getAttribute('data-name');
+            const category = item.getAttribute('data-category');
+            
+            const matchesSearch = name.includes(term);
+            const matchesCat = currentFilter === 'all' || category === currentFilter;
+
+            if (matchesSearch && matchesCat) {
+                item.classList.remove('hidden');
+                count++;
+            } else {
+                item.classList.add('hidden');
+            }
+        });
+
+        if(noResults) noResults.style.display = count === 0 ? 'block' : 'none';
+    };
+
+    searchInput?.addEventListener('input', filterPizzas);
+
+    catButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+            // Estilos
+            catButtons.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            
+            // Lógica
+            currentFilter = btn.getAttribute('data-filter');
+            filterPizzas();
+        });
+    });
+
+
+    // --- 3. LÓGICA DE FILTROS (EXTRAS) ---
+    const extraButtons = document.querySelectorAll('.extra-cat-btn');
+    const extraItems = document.querySelectorAll('.extra-item');
+
+    extraButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+            extraButtons.forEach(b => {
+                b.classList.remove('bg-amber-500', 'text-black', 'border-amber-500');
+                b.classList.add('text-neutral-400', 'border-white/10');
+            });
+            btn.classList.remove('text-neutral-400', 'border-white/10');
+            btn.classList.add('bg-amber-500', 'text-black', 'border-amber-500');
+
+            const filter = btn.getAttribute('data-filter');
+            extraItems.forEach(item => {
+                if(filter === 'Todos' || item.getAttribute('data-category') === filter) {
+                    item.classList.remove('hidden');
+                } else {
+                    item.classList.add('hidden');
+                }
+            });
+        });
+    });
+    // Activar "Todos" por defecto visualmente
+    if(extraButtons[0]) extraButtons[0].click();
+  }
+
+  document.addEventListener('astro:page-load', initAppLogic);
+  document.addEventListener('DOMContentLoaded', initAppLogic);
+</script>
