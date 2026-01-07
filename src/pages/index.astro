@@ -4,7 +4,7 @@ import Layout from '../layouts/Layout.astro';
 import MenuCard from '../components/Menu/MenuCard.astro';
 import SizeSelector from '../components/Menu/SizeSelector.jsx';
 import { menuItems } from '../data/menuData.js'; 
-
+import ProductModal from '../components/Menu/ProductModal.jsx';
 const allItems = menuItems || [];
 
 // 1. SEPARAMOS LOS DATOS
@@ -20,15 +20,17 @@ const extraCategories = ["Todos", "Paquetes", "Snacks", "Bebidas"];
 ---
 
 <Layout title="Pizzetos | Menú Premium">
-  <main class="bg-neutral-950 min-h-screen pb-20 relative font-body">
+  <main class="bg-neutral-950 min-h-screen pb-20 relative font-body pt-28 overflow-hidden">
     
-    <section class="pt-8 pb-4 text-center px-4 sticky top-0 z-50 bg-neutral-950/80 backdrop-blur-md border-b border-white/5">
+    <div class="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[500px] bg-amber-600/10 rounded-full blur-[120px] pointer-events-none z-0"></div>
+
+    <section class="pb-4 text-center px-4 relative z-10">
       <h1 class="text-4xl md:text-5xl font-black text-white font-serif italic tracking-tighter cursor-pointer hover:text-amber-500 transition-colors" onclick="window.location.reload()">
         Pizzetos<span class="text-amber-500">.</span>
       </h1>
     </section>
 
-    <div id="screen-sizes" class="transition-all duration-500 opacity-100 transform translate-x-0 pt-4">
+    <div id="screen-sizes" class="transition-all duration-500 opacity-100 transform translate-x-0 pt-4 relative z-10">
       <SizeSelector client:load />
       
       <div class="text-center mt-8 animate-fade-in-up" style="animation-delay: 0.2s;">
@@ -42,9 +44,9 @@ const extraCategories = ["Todos", "Paquetes", "Snacks", "Bebidas"];
       </div>
     </div>
 
-    <div id="screen-flavors" class="hidden opacity-0 transform translate-x-10 transition-all duration-500 max-w-7xl mx-auto px-4 pt-4">
+    <div id="screen-flavors" class="hidden opacity-0 transform translate-x-10 transition-all duration-500 max-w-7xl mx-auto px-4 pt-4 relative z-10">
       
-      <div class="sticky top-24 z-40 bg-neutral-950/95 backdrop-blur-xl py-4 -mx-4 px-4 border-b border-white/10 mb-8 shadow-2xl">
+      <div class="sticky top-4 z-40 bg-neutral-950/95 backdrop-blur-xl py-4 -mx-4 px-4 border-b border-white/10 mb-8 shadow-2xl rounded-b-2xl">
         
         <div class="flex items-center justify-between mb-4">
           <button id="btn-back-sizes" class="flex items-center gap-2 text-neutral-400 hover:text-white transition-colors group">
@@ -61,11 +63,13 @@ const extraCategories = ["Todos", "Paquetes", "Snacks", "Bebidas"];
         </div>
 
         <div class="flex flex-col md:flex-row gap-4 items-center justify-between">
-            
             <div class="relative w-full md:w-1/3">
-                <input type="text" id="pizza-search" placeholder="Buscar sabor (ej: Hawaiana)..." 
+                <input 
+                    type="text" 
+                    id="pizza-search" 
+                    placeholder="Buscar sabor (ej: Hawaiana)..." 
                     class="w-full bg-white/5 border border-white/10 rounded-full py-2 pl-10 pr-4 text-white text-sm focus:outline-none focus:border-amber-500 focus:bg-white/10 transition-all"
-                >
+                />
                 <svg class="absolute left-3 top-2.5 h-4 w-4 text-neutral-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                 </svg>
@@ -98,7 +102,7 @@ const extraCategories = ["Todos", "Paquetes", "Snacks", "Bebidas"];
 
     </div>
 
-    <div id="screen-extras" class="hidden opacity-0 transform translate-y-10 transition-all duration-500 max-w-7xl mx-auto px-4 pt-4">
+    <div id="screen-extras" class="hidden opacity-0 transform translate-y-10 transition-all duration-500 max-w-7xl mx-auto px-4 pt-4 relative z-10">
         
         <div class="flex items-center mb-8">
             <button id="btn-back-home" class="flex items-center gap-2 text-neutral-400 hover:text-white transition-colors group">
@@ -133,6 +137,7 @@ const extraCategories = ["Todos", "Paquetes", "Snacks", "Bebidas"];
     </div>
 
   </main>
+  <ProductModal client:load />
 </Layout>
 
 <style>
@@ -154,7 +159,6 @@ const extraCategories = ["Todos", "Paquetes", "Snacks", "Bebidas"];
         border-color: #f59e0b;
         box-shadow: 0 0 15px rgba(245, 158, 11, 0.2);
     }
-    /* Ocultar barra scroll en movil */
     .scrollbar-hide::-webkit-scrollbar { display: none; }
     .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
 </style>
@@ -173,54 +177,47 @@ const extraCategories = ["Todos", "Paquetes", "Snacks", "Bebidas"];
     const btnShowExtras = document.getElementById('btn-show-extras');
     const btnBackHome = document.getElementById('btn-back-home');
 
-    // --- 1. NAVEGACIÓN ENTRE PANTALLAS ---
-    
-    const showScreen = (screenId) => {
-        // Ocultar todo
+    // --- 1. NAVEGACIÓN ---
+    const showScreen = (screenId = '') => {
         [screenSizes, screenFlavors, screenExtras].forEach(s => {
-            s.classList.add('hidden', 'opacity-0', 'pointer-events-none');
-            // Reset transforms
-            s.classList.remove('translate-x-0', 'translate-y-0');
+            if (s) {
+                s.classList.add('hidden', 'opacity-0', 'pointer-events-none');
+                s.classList.remove('translate-x-0', 'translate-y-0');
+            }
         });
 
         const target = document.getElementById(screenId);
-        target.classList.remove('hidden');
-        
-        // Animación de entrada
-        setTimeout(() => {
-            target.classList.remove('opacity-0', 'pointer-events-none');
-            target.classList.add('translate-x-0', 'translate-y-0');
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }, 50);
+        if (target) {
+            target.classList.remove('hidden');
+            setTimeout(() => {
+                target.classList.remove('opacity-0', 'pointer-events-none');
+                target.classList.add('translate-x-0', 'translate-y-0');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }, 50);
+        }
     };
 
-    // Escuchar cambios de tamaño (Cerebro)
+    // Store Suscription
     selectedGlobalSize.subscribe(size => {
         if (size) {
             if(displaySize) displaySize.textContent = size;
             showScreen('screen-flavors');
         } else {
-            // Si se quita el tamaño, volvemos al inicio (pero solo si no estamos viendo extras)
-            if(!screenExtras.classList.contains('opacity-100')) {
+            if(screenExtras && !screenExtras.classList.contains('opacity-100')) {
                 showScreen('screen-sizes');
             }
         }
     });
 
-    // Botón "Atrás" en Pizzas
     btnBackSizes?.addEventListener('click', () => selectedGlobalSize.set(null));
-
-    // Botón "Ver Paquetes"
     btnShowExtras?.addEventListener('click', () => {
-        selectedGlobalSize.set(null); // Aseguramos reset
+        selectedGlobalSize.set(null); 
         showScreen('screen-extras');
     });
-
-    // Botón "Volver al Inicio" desde Extras
     btnBackHome?.addEventListener('click', () => showScreen('screen-sizes'));
 
 
-    // --- 2. LÓGICA DE BÚSQUEDA Y FILTROS (PIZZAS) ---
+    // --- 2. BÚSQUEDA Y FILTROS (Sin errores rojos) ---
     const searchInput = document.getElementById('pizza-search');
     const catButtons = document.querySelectorAll('.cat-btn');
     const pizzaItems = document.querySelectorAll('.pizza-item');
@@ -229,6 +226,9 @@ const extraCategories = ["Todos", "Paquetes", "Snacks", "Bebidas"];
     let currentFilter = 'all';
 
     const filterPizzas = () => {
+        // Validación estricta para que no salga rojo en .value
+        if (!(searchInput instanceof HTMLInputElement)) return;
+
         const term = searchInput.value.toLowerCase();
         let count = 0;
 
@@ -236,7 +236,7 @@ const extraCategories = ["Todos", "Paquetes", "Snacks", "Bebidas"];
             const name = item.getAttribute('data-name');
             const category = item.getAttribute('data-category');
             
-            const matchesSearch = name.includes(term);
+            const matchesSearch = name && name.includes(term);
             const matchesCat = currentFilter === 'all' || category === currentFilter;
 
             if (matchesSearch && matchesCat) {
@@ -250,22 +250,20 @@ const extraCategories = ["Todos", "Paquetes", "Snacks", "Bebidas"];
         if(noResults) noResults.style.display = count === 0 ? 'block' : 'none';
     };
 
-    searchInput?.addEventListener('input', filterPizzas);
+    if (searchInput) {
+        searchInput.addEventListener('input', filterPizzas);
+    }
 
     catButtons.forEach(btn => {
         btn.addEventListener('click', () => {
-            // Estilos
             catButtons.forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
-            
-            // Lógica
-            currentFilter = btn.getAttribute('data-filter');
+            currentFilter = btn.getAttribute('data-filter') || 'all';
             filterPizzas();
         });
     });
 
-
-    // --- 3. LÓGICA DE FILTROS (EXTRAS) ---
+    // --- 3. FILTROS EXTRAS (Sin errores rojos) ---
     const extraButtons = document.querySelectorAll('.extra-cat-btn');
     const extraItems = document.querySelectorAll('.extra-item');
 
@@ -288,8 +286,12 @@ const extraCategories = ["Todos", "Paquetes", "Snacks", "Bebidas"];
             });
         });
     });
-    // Activar "Todos" por defecto visualmente
-    if(extraButtons[0]) extraButtons[0].click();
+
+    // Validación estricta para el click automático
+    const firstBtn = extraButtons[0];
+    if(firstBtn instanceof HTMLElement) {
+        firstBtn.click();
+    }
   }
 
   document.addEventListener('astro:page-load', initAppLogic);

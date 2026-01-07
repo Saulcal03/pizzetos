@@ -5,28 +5,35 @@ import { atom, computed } from 'nanostores';
 export const cartItems = atom([]);
 export const isCartOpen = atom(false);
 export const isModalOpen = atom(false);
-export const currentProduct = atom(null);
-export const selectedGlobalSize = atom(null); // Para el selector "Pro" de tamaño
+export const modalProduct = atom(null); 
+export const selectedGlobalSize = atom(null); 
 
 // --- HELPERS ---
 export const cartCount = computed(cartItems, items => items.length);
 
 // --- ACCIONES MODAL ---
 export function openProductModal(product) {
-  currentProduct.set(product);
+  modalProduct.set(product);
   isModalOpen.set(true);
 }
 
 export function closeProductModal() {
   isModalOpen.set(false);
-  currentProduct.set(null);
+  modalProduct.set(null);
 }
 
 // --- ACCIONES CARRITO ---
 export function addCartItem(item) {
   const currentItems = cartItems.get();
   const uniqueId = Math.random().toString(36).substring(2, 9) + Date.now().toString(36);
-  cartItems.set([...currentItems, { ...item, uniqueId, addedAt: Date.now() }]);
+  
+  // Aseguramos que item tenga priceFull, si no lo tiene, usamos price
+  const priceFull = item.priceFull || item.price;
+  
+  // Guardamos el item con priceFull explícito para que la lógica 2x1 no falle
+  cartItems.set([...currentItems, { ...item, priceFull, uniqueId, addedAt: Date.now() }]);
+  
+  isCartOpen.set(true); 
 }
 
 export function removeCartItem(uniqueId) {
@@ -37,40 +44,39 @@ export function toggleCart(isOpen) {
   isCartOpen.set(isOpen !== undefined ? isOpen : !isCartOpen.get());
 }
 
-// --- LÓGICA MAESTRA 2x1 (CORREGIDA: AUTOMÁTICA) ---
+// --- LÓGICA MAESTRA 2x1 (CORREGIDA PARA EVITAR NaN) ---
 export const groupedCart = computed(cartItems, (items) => {
   let processedItems = [];
   let total = 0;
   
-  // 1. Tomamos TODAS las pizzas, sin importar si eligieron promo o individual
   const allPizzas = items.filter(i => i.category === 'Pizzas' || i.category === 'Especialidades del Mar');
   const otherItems = items.filter(i => i.category !== 'Pizzas' && i.category !== 'Especialidades del Mar');
 
-  // 2. Las agrupamos por tamaño
   const pizzasBySize = {};
   allPizzas.forEach(p => {
-    // Si por error no trae size, lo mandamos a 'General'
     const size = p.size || 'General';
     if (!pizzasBySize[size]) pizzasBySize[size] = [];
     pizzasBySize[size].push(p);
   });
 
-  // 3. Emparejamos automáticamente (Estrategia: El usuario siempre gana)
   Object.keys(pizzasBySize).forEach(size => {
     const list = [...pizzasBySize[size]];
     
-    // Ordenamos por precio para emparejar las más caras juntas (o estrategia que prefieras)
-    // Aquí simplemente vamos tomando de 2 en 2
+    // Ordenamos por precio descendente para emparejar las más caras
+    list.sort((a, b) => (b.priceFull || b.price) - (a.priceFull || a.price));
+
     while (list.length > 0) {
       const pizza1 = list.shift();
-      
+      // Leemos el precio de forma segura (usa priceFull si existe, si no price, si no 0)
+      const p1Price = pizza1.priceFull || pizza1.price || 0;
+
       if (list.length > 0) {
         // --- TENEMOS PAREJA (2x1) ---
         const pizza2 = list.shift();
+        const p2Price = pizza2.priceFull || pizza2.price || 0;
         
-        // Precio: La más cara de las dos define el precio del par (lógica estándar)
-        // Usamos priceFull porque es el precio de lista sin descuento
-        const pairPrice = Math.max(pizza1.priceFull, pizza2.priceFull); 
+        // La más cara define el precio del par
+        const pairPrice = Math.max(p1Price, p2Price); 
         
         processedItems.push({
           type: 'promo_pair',
@@ -83,26 +89,24 @@ export const groupedCart = computed(cartItems, (items) => {
         total += pairPrice;
       } else {
         // --- PIZZA SOLA (Individual con Descuento) ---
-        // Al quedar sola, le aplicamos el descuento del 40% automáticamente
-        // Aunque el usuario haya marcado "Promo", si está sola, le cobramos barato.
-        const individualPrice = Math.round(pizza1.priceFull * 0.6);
+        // Aplicamos 40% de descuento (precio * 0.6)
+        const individualPrice = Math.round(p1Price * 0.6);
         
         processedItems.push({
           ...pizza1,
           displayPrice: individualPrice, 
-          isWaitingPair: true, // Para mostrar aviso visual
+          isWaitingPair: true, 
           uniqueId: pizza1.uniqueId,
-          price: individualPrice // Aseguramos que el total sume el precio con descuento
+          price: individualPrice 
         });
         total += individualPrice;
       }
     }
   });
 
-  // 4. Agregamos el resto de cosas
   otherItems.forEach(item => {
     processedItems.push(item);
-    total += item.price;
+    total += item.price || 0;
   });
 
   return { items: processedItems, total };

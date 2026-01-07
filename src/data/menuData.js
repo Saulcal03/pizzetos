@@ -1,4 +1,4 @@
-// menu.js - Base de datos de productos
+// src/data/menuData.js - Base de datos de productos
 export const menuItems = [
   // --- 1. PIZZAS REGULARES (Precios Estandarizados) ---
   {
@@ -6,78 +6,48 @@ export const menuItems = [
     name: "Hawaiana",
     description: "Jamón y Piña",
     category: "Pizzas",
-    image: "/img/hawaiana.webp", // Placeholder para imagen
-    prices: {
-      "Chica": 180,
-      "Mediana": 255,
-      "Grande": 315,
-      "Familiar": 375
-    }
+    image: "/img/hawaina.webp", 
+    prices: { "Chica": 180, "Mediana": 255, "Grande": 315, "Familiar": 375 }
   },
   {
     id: "hawaiana-especial",
     name: "Hawaiana Especial",
     description: "Jamón, Piña y Cereza",
     category: "Pizzas",
-    image: "/img/hawaiana-especial.webp",
-    prices: {
-      "Chica": 180,
-      "Mediana": 255,
-      "Grande": 315,
-      "Familiar": 375
-    }
+    image: "/img/hawaianaespecial.webp",
+    prices: { "Chica": 180, "Mediana": 255, "Grande": 315, "Familiar": 375 }
   },
   {
     id: "combinada-especial",
     name: "Combinada Especial",
     description: "Champiñón, Cebolla, Pimiento V., Salami, Jamón y Chorizo",
     category: "Pizzas",
-    image: "/img/combinada.webp",
-    prices: {
-      "Chica": 180,
-      "Mediana": 255,
-      "Grande": 315,
-      "Familiar": 375
-    }
+    image: "/img/combinadaespecial.webp", // CORREGIDO: En tu log salía 'combinada.webp'
+    prices: { "Chica": 180, "Mediana": 255, "Grande": 315, "Familiar": 375 }
   },
   {
     id: "pizzeto-especial",
     name: "Pizzeto Especial",
     description: "Champiñón, Cebolla, Pimiento V., Salami, Peperoni y Chorizo",
     category: "Pizzas",
-    image: "/img/pizzeto.webp",
-    prices: {
-      "Chica": 180,
-      "Mediana": 255,
-      "Grande": 315,
-      "Familiar": 375
-    }
+    image: "/img/pizzetaespecial.webp", // CORREGIDO: En tu log salía 'pizzeto.webp'
+    prices: { "Chica": 180, "Mediana": 255, "Grande": 315, "Familiar": 375 }
   },
   {
     id: "atun-especial",
     name: "Atún Especial",
     description: "Atún, Champiñón, Aguacate y Rajas de Habanero",
     category: "Pizzas",
-    image: "/img/atun.webp",
-    prices: {
-      "Chica": 180,
-      "Mediana": 255,
-      "Grande": 315,
-      "Familiar": 375
-    }
+    image: "/img/atun especial.webp", // CORREGIDO
+    prices: { "Chica": 180, "Mediana": 255, "Grande": 315, "Familiar": 375 }
   },
   {
     id: "pepperoni",
     name: "Pepperoni",
     description: "Peperoni y Queso",
     category: "Pizzas",
-    image: "/img/pepperoni.webp",
-    prices: {
-      "Chica": 180,
-      "Mediana": 255,
-      "Grande": 315,
-      "Familiar": 375
-    }
+    image: "/img/peperoni.webp",
+    prices: { "Chica": 180, "Mediana": 255, "Grande": 315, "Familiar": 375 }
   },
   {
     id: "mexicana",
@@ -85,25 +55,15 @@ export const menuItems = [
     description: "Pierna, Pollo, Jalapeño y Aguacate",
     category: "Pizzas",
     image: "/img/mexicana.webp",
-    prices: {
-      "Chica": 180,
-      "Mediana": 255,
-      "Grande": 315,
-      "Familiar": 375
-    }
+    prices: { "Chica": 180, "Mediana": 255, "Grande": 315, "Familiar": 375 }
   },
   {
     id: "carnes-frias",
     name: "Carnes Frías",
     description: "Pierna, Salchicha, Peperoni y Tocino",
     category: "Pizzas",
-    image: "/img/carnes-frias.webp",
-    prices: {
-      "Chica": 180,
-      "Mediana": 255,
-      "Grande": 315,
-      "Familiar": 375
-    }
+    image: "/img/carnes%20frias.webp",
+    prices: { "Chica": 180, "Mediana": 255, "Grande": 315, "Familiar": 375 }
   },
   {
     id: "azteca",
@@ -111,25 +71,15 @@ export const menuItems = [
     description: "Chorizo, Jalapeño, Frijoles y Aguacate",
     category: "Pizzas",
     image: "/img/azteca.webp",
-    prices: {
-      "Chica": 180,
-      "Mediana": 255,
-      "Grande": 315,
-      "Familiar": 375
-    }
+    prices: { "Chica": 180, "Mediana": 255, "Grande": 315, "Familiar": 375 }
   },
   {
     id: "mafiosa",
     name: "Mafiosa",
     description: "Champiñón, Jalapeño, Salami y Tocino",
     category: "Pizzas",
-    image: "/img/mafiosa.webp",
-    prices: {
-      "Chica": 180,
-      "Mediana": 255,
-      "Grande": 315,
-      "Familiar": 375
-    }
+    image: "/img/Mafiosa.webp",
+    prices: { "Chica": 180, "Mediana": 255, "Grande": 315, "Familiar": 375 }
   },
   {
     id: "cubana",
@@ -137,38 +87,23 @@ export const menuItems = [
     description: "Pierna, Aguacate, Jalapeño, Jitomate y Atún",
     category: "Pizzas",
     image: "/img/cubana.webp",
-    prices: {
-      "Chica": 180,
-      "Mediana": 255,
-      "Grande": 315,
-      "Familiar": 375
-    }
+    prices: { "Chica": 180, "Mediana": 255, "Grande": 315, "Familiar": 375 }
   },
   {
     id: "pastor",
     name: "Pastor",
     description: "Carne al Pastor, Cebolla, Piña y Jalapeño o Chipotle",
     category: "Pizzas",
-    image: "/img/pastor.webp",
-    prices: {
-      "Chica": 180,
-      "Mediana": 255,
-      "Grande": 315,
-      "Familiar": 375
-    }
+    image: "/img/Pastor.webp",
+    prices: { "Chica": 180, "Mediana": 255, "Grande": 315, "Familiar": 375 }
   },
   {
     id: "vegetariana",
     name: "Vegetariana",
     description: "Champiñón, Cebolla, Pimiento V. y Aceituna Verde",
     category: "Pizzas",
-    image: "/img/vegetariana.webp",
-    prices: {
-      "Chica": 180,
-      "Mediana": 255,
-      "Grande": 315,
-      "Familiar": 375
-    }
+    image: "/img/vegetariana..webp",
+    prices: { "Chica": 180, "Mediana": 255, "Grande": 315, "Familiar": 375 }
   },
   {
     id: "chistorra",
@@ -176,25 +111,15 @@ export const menuItems = [
     description: "Chistorra y Champiñón",
     category: "Pizzas",
     image: "/img/chistorra.webp",
-    prices: {
-      "Chica": 180,
-      "Mediana": 255,
-      "Grande": 315,
-      "Familiar": 375
-    }
+    prices: { "Chica": 180, "Mediana": 255, "Grande": 315, "Familiar": 375 }
   },
   {
     id: "clasica",
     name: "Clásica",
     description: "Champiñón, Peperoni y Pimiento V.",
     category: "Pizzas",
-    image: "/img/clasica.webp",
-    prices: {
-      "Chica": 180,
-      "Mediana": 255,
-      "Grande": 315,
-      "Familiar": 375
-    }
+    image: "/img/clasica..webp",
+    prices: { "Chica": 180, "Mediana": 255, "Grande": 315, "Familiar": 375 }
   },
   {
     id: "campestre",
@@ -202,38 +127,23 @@ export const menuItems = [
     description: "Granos de elote, Jalapeño, Pollo y Chorizo",
     category: "Pizzas",
     image: "/img/campestre.webp",
-    prices: {
-      "Chica": 180,
-      "Mediana": 255,
-      "Grande": 315,
-      "Familiar": 375
-    }
+    prices: { "Chica": 180, "Mediana": 255, "Grande": 315, "Familiar": 375 }
   },
   {
     id: "costilla-bbq",
     name: "Costilla BBQ",
     description: "Costilla Ahumada, Salsa BBQ o Mango Habanero",
     category: "Pizzas",
-    image: "/img/costilla.webp",
-    prices: {
-      "Chica": 180,
-      "Mediana": 255,
-      "Grande": 315,
-      "Familiar": 375
-    }
+    image: "/img/costilla.webp", // CORREGIDO: Usamos la misma de snacks si no tienes otra específica
+    prices: { "Chica": 180, "Mediana": 255, "Grande": 315, "Familiar": 375 }
   },
   {
     id: "pirata",
     name: "Pirata",
     description: "Atún, Chipotle, Cebolla y Aceitunas Verdes",
     category: "Pizzas",
-    image: "/img/pirata.webp",
-    prices: {
-      "Chica": 180,
-      "Mediana": 255,
-      "Grande": 315,
-      "Familiar": 375
-    }
+    image: "/img/pirata..webp",
+    prices: { "Chica": 180, "Mediana": 255, "Grande": 315, "Familiar": 375 }
   },
   {
     id: "italiana",
@@ -241,12 +151,7 @@ export const menuItems = [
     description: "Carne Molida de Res, Champiñón y Pimiento V.",
     category: "Pizzas",
     image: "/img/italiana.webp",
-    prices: {
-      "Chica": 180,
-      "Mediana": 255,
-      "Grande": 315,
-      "Familiar": 375
-    }
+    prices: { "Chica": 180, "Mediana": 255, "Grande": 315, "Familiar": 375 }
   },
   {
     id: "fugazza",
@@ -254,12 +159,7 @@ export const menuItems = [
     description: "Palomitas de pollo, Salsa BBQ y Salsa Buffalo",
     category: "Pizzas",
     image: "/img/fugazza.webp",
-    prices: {
-      "Chica": 180,
-      "Mediana": 255,
-      "Grande": 315,
-      "Familiar": 375
-    }
+    prices: { "Chica": 180, "Mediana": 255, "Grande": 315, "Familiar": 375 }
   },
 
   // --- 2. ESPECIALIDADES DEL MAR (Precios Específicos) ---
@@ -268,26 +168,16 @@ export const menuItems = [
     name: "Camarón",
     description: "Camarón",
     category: "Especialidades del Mar",
-    image: "/img/camaron.webp",
-    prices: {
-      "Chica": 200,
-      "Mediana": 280,
-      "Grande": 380,
-      "Familiar": 480
-    }
+    image: "/img/camaron..webp",
+    prices: { "Chica": 200, "Mediana": 280, "Grande": 380, "Familiar": 480 }
   },
   {
     id: "pizza-del-mar",
     name: "Pizza Del Mar",
     description: "Camarón, mejillón, pulpo, atún, aceitunas y cebolla",
     category: "Especialidades del Mar",
-    image: "/img/del-mar.webp",
-    prices: {
-      "Chica": 250,
-      "Mediana": 320,
-      "Grande": 450,
-      "Familiar": 540
-    }
+    image: "/img/del mar..webp", // CORREGIDO
+    prices: { "Chica": 250, "Mediana": 320, "Grande": 450, "Familiar": 540 }
   },
 
   // --- 3. PAQUETES ---
@@ -297,7 +187,7 @@ export const menuItems = [
     description: "Pizza Hawaiana y Pepperoni (2x1) + 1 Refresco Jarrito",
     price: 295,
     category: "Paquetes",
-    image: "/img/paquete-1.webp",
+    image: "/img/paquete1.webp",
     type: "fijo"
   },
   {
@@ -306,7 +196,7 @@ export const menuItems = [
     description: "1 Pizza grande de especialidad a elegir + 1 Refresco Jarrito + Hamburguesa o Alitas",
     price: 265,
     category: "Paquetes",
-    image: "/img/paquete-2.webp",
+    image: "/img/paquete2.webp",
     type: "personalizable"
   },
   {
@@ -315,7 +205,7 @@ export const menuItems = [
     description: "3 Pizzas grandes de especialidad a elegir + 1 Refresco Jarrito",
     price: 395,
     category: "Paquetes",
-    image: "/img/paquete-3.webp",
+    image: "/img/paquete3.webp",
     type: "personalizable"
   },
   {
@@ -324,7 +214,7 @@ export const menuItems = [
     description: "1 Pizza Familiar (1 o 2 especialidades) + 1 Refresco Jarrito",
     price: 230,
     category: "Paquetes",
-    image: "/img/magno.webp",
+    image: "/img/promo%20magno..webp",
     type: "personalizable"
   },
   {
@@ -333,7 +223,7 @@ export const menuItems = [
     description: "4 especialidades a elegir + 1 Refresco (2Lts)",
     price: 365,
     category: "Paquetes",
-    image: "/img/rectangular.webp",
+    image: "/img/rectangular..webp",
     type: "personalizable"
   },
   {
@@ -342,7 +232,7 @@ export const menuItems = [
     description: "2 especialidades a elegir + 1 Refresco (2Lts)",
     price: 260,
     category: "Paquetes",
-    image: "/img/barra.webp",
+    image: "/img/barra.webp", // Necesitas tener barra.webp, si no usa rectangular.webp temporalmente
     type: "personalizable"
   },
 
@@ -353,7 +243,7 @@ export const menuItems = [
     description: "Acompañadas de papas y refresco de 355ml",
     price: 80,
     category: "Snacks",
-    image: "/img/burger-sencilla.webp",
+    image: "/img/hamburguesa%20sencilla.webp", // CORREGIDO
     type: "personalizable"
   },
   {
@@ -362,7 +252,7 @@ export const menuItems = [
     description: "Acompañadas de papas y refresco de 355ml",
     price: 95,
     category: "Snacks",
-    image: "/img/burger-doble.webp",
+    image: "/img/hamburguesa%20doble.webp", // CORREGIDO
     type: "personalizable"
   },
   {
@@ -371,7 +261,7 @@ export const menuItems = [
     description: "Acompañadas de papas y refresco de 355ml",
     price: 120,
     category: "Snacks",
-    image: "/img/costillas.webp",
+    image: "/img/costillabbq.webp",
     type: "personalizable"
   },
   {
@@ -380,7 +270,7 @@ export const menuItems = [
     description: "Acompañadas de papas y refresco de 355ml",
     price: 95,
     category: "Snacks",
-    image: "/img/alitas.webp",
+    image: "/img/alitasbbq.webp",
     type: "personalizable"
   },
   {
@@ -389,7 +279,7 @@ export const menuItems = [
     description: "Crujientes y doradas",
     price: 55,
     category: "Snacks",
-    image: "/img/papas.webp",
+    image: "/img/papas..webp",
     type: "fijo"
   },
   {
@@ -398,7 +288,7 @@ export const menuItems = [
     description: "Orden para 2 personas",
     price: 95,
     category: "Snacks",
-    image: "/img/spaghetti-jamon.webp",
+    image: "/img/spaguetty%20jamon,queso%20y%20tocino.webp",
     type: "fijo"
   },
   {
@@ -407,18 +297,16 @@ export const menuItems = [
     description: "Orden para 2 personas",
     price: 180,
     category: "Snacks",
-    image: "/img/spaghetti-camaron.webp",
+    image: "/img/spaguetty%20camaron.webp",
     type: "fijo"
   },
-
-  // --- 5. BEBIDAS (Para catálogo visual) ---
   {
     id: "refresco-2lts",
     name: "Refresco 2 Lts",
     description: "Sabores: Pepsi, Manzanita, Sangría, 7UP, Mirinda",
     price: 45,
     category: "Bebidas",
-    image: "/img/refresco-2l.webp",
+    image: "/img/refresco2l.webp",
     type: "personalizable",
     opciones: ["Pepsi", "Manzanita", "Sangría", "7UP", "Mirinda"]
   },
@@ -428,7 +316,7 @@ export const menuItems = [
     description: "Sabores: Pepsi, Manzanita, Sangría, 7UP, Mirinda, Jumex Fresh",
     price: 22,
     category: "Bebidas",
-    image: "/img/refresco-600.webp",
+    image: "/img/refresco600ml.webp",
     type: "personalizable",
     opciones: ["Pepsi", "Manzanita", "Sangría", "7UP", "Mirinda", "Jumex Fresh"]
   },
@@ -438,13 +326,13 @@ export const menuItems = [
     description: "Sabores: Fanta, Sprite, Fresca, Mundet",
     price: 17,
     category: "Bebidas",
-    image: "/img/refresco-355.webp",
+    image: "/img/refresco355ml.webp",
     type: "personalizable",
     opciones: ["Fanta", "Sprite", "Fresca", "Mundet"]
   }
 ];
 
-// Exportamos también los listados de refrescos por si los necesitamos en otros componentes
+
 export const opcionesRefrescos = {
   refrescos_2l: ["Pepsi", "Manzanita", "Sangría", "7UP", "Mirinda"],
   refrescos_600ml: ["Pepsi", "Manzanita", "Sangría", "7UP", "Mirinda", "Jumex Fresh"],
