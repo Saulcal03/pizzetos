@@ -7,7 +7,8 @@ export const menuItems = [
     description: "Jamón y Piña",
     category: "Pizzas",
     image: "/img/hawaina.webp", 
-    prices: { "Chica": 180, "Mediana": 255, "Grande": 315, "Familiar": 375 }
+    prices: { "Chica": 180, "Mediana": 255, "Grande": 315, "Familiar": 375 },
+    type: "personalizable"
   },
   {
     id: "hawaiana-especial",
@@ -15,7 +16,8 @@ export const menuItems = [
     description: "Jamón, Piña y Cereza",
     category: "Pizzas",
     image: "/img/hawaianaespecial.webp",
-    prices: { "Chica": 180, "Mediana": 255, "Grande": 315, "Familiar": 375 }
+    prices: { "Chica": 180, "Mediana": 255, "Grande": 315, "Familiar": 375 },
+    type: "personalizable"
   },
   {
     id: "combinada-especial",
@@ -23,7 +25,8 @@ export const menuItems = [
     description: "Champiñón, Cebolla, Pimiento V., Salami, Jamón y Chorizo",
     category: "Pizzas",
     image: "/img/combinadaespecial.webp", // CORREGIDO: En tu log salía 'combinada.webp'
-    prices: { "Chica": 180, "Mediana": 255, "Grande": 315, "Familiar": 375 }
+    prices: { "Chica": 180, "Mediana": 255, "Grande": 315, "Familiar": 375 },
+    type: "personalizable"
   },
   {
     id: "pizzeto-especial",
@@ -31,7 +34,8 @@ export const menuItems = [
     description: "Champiñón, Cebolla, Pimiento V., Salami, Peperoni y Chorizo",
     category: "Pizzas",
     image: "/img/pizzetaespecial.webp", // CORREGIDO: En tu log salía 'pizzeto.webp'
-    prices: { "Chica": 180, "Mediana": 255, "Grande": 315, "Familiar": 375 }
+    prices: { "Chica": 180, "Mediana": 255, "Grande": 315, "Familiar": 375 },
+    type: "personalizable"
   },
   {
     id: "atun-especial",
@@ -39,7 +43,8 @@ export const menuItems = [
     description: "Atún, Champiñón, Aguacate y Rajas de Habanero",
     category: "Pizzas",
     image: "/img/atun especial.webp", // CORREGIDO
-    prices: { "Chica": 180, "Mediana": 255, "Grande": 315, "Familiar": 375 }
+    prices: { "Chica": 180, "Mediana": 255, "Grande": 315, "Familiar": 375 },
+    type: "personalizable"
   },
   {
     id: "pepperoni",
@@ -47,7 +52,8 @@ export const menuItems = [
     description: "Peperoni y Queso",
     category: "Pizzas",
     image: "/img/peperoni.webp",
-    prices: { "Chica": 180, "Mediana": 255, "Grande": 315, "Familiar": 375 }
+    prices: { "Chica": 180, "Mediana": 255, "Grande": 315, "Familiar": 375 },
+    type: "personalizable"
   },
   {
     id: "mexicana",
@@ -55,7 +61,8 @@ export const menuItems = [
     description: "Pierna, Pollo, Jalapeño y Aguacate",
     category: "Pizzas",
     image: "/img/mexicana.webp",
-    prices: { "Chica": 180, "Mediana": 255, "Grande": 315, "Familiar": 375 }
+    prices: { "Chica": 180, "Mediana": 255, "Grande": 315, "Familiar": 375 },
+    type: "personalizable"
   },
   {
     id: "carnes-frias",
@@ -63,7 +70,8 @@ export const menuItems = [
     description: "Pierna, Salchicha, Peperoni y Tocino",
     category: "Pizzas",
     image: "/img/carnes%20frias.webp",
-    prices: { "Chica": 180, "Mediana": 255, "Grande": 315, "Familiar": 375 }
+    prices: { "Chica": 180, "Mediana": 255, "Grande": 315, "Familiar": 375 },
+    type: "personalizable"
   },
   {
     id: "azteca",
@@ -71,7 +79,8 @@ export const menuItems = [
     description: "Chorizo, Jalapeño, Frijoles y Aguacate",
     category: "Pizzas",
     image: "/img/azteca.webp",
-    prices: { "Chica": 180, "Mediana": 255, "Grande": 315, "Familiar": 375 }
+    prices: { "Chica": 180, "Mediana": 255, "Grande": 315, "Familiar": 375 },
+    type: "personalizable"
   },
   {
     id: "mafiosa",
@@ -79,7 +88,8 @@ export const menuItems = [
     description: "Champiñón, Jalapeño, Salami y Tocino",
     category: "Pizzas",
     image: "/img/Mafiosa.webp",
-    prices: { "Chica": 180, "Mediana": 255, "Grande": 315, "Familiar": 375 }
+    prices: { "Chica": 180, "Mediana": 255, "Grande": 315, "Familiar": 375 },
+    type: "personalizable"
   },
   {
     id: "cubana",
@@ -87,7 +97,8 @@ export const menuItems = [
     description: "Pierna, Aguacate, Jalapeño, Jitomate y Atún",
     category: "Pizzas",
     image: "/img/cubana.webp",
-    prices: { "Chica": 180, "Mediana": 255, "Grande": 315, "Familiar": 375 }
+    prices: { "Chica": 180, "Mediana": 255, "Grande": 315, "Familiar": 375 },
+    type: "personalizable"
   },
   {
     id: "pastor",
@@ -95,7 +106,8 @@ export const menuItems = [
     description: "Carne al Pastor, Cebolla, Piña y Jalapeño o Chipotle",
     category: "Pizzas",
     image: "/img/Pastor.webp",
-    prices: { "Chica": 180, "Mediana": 255, "Grande": 315, "Familiar": 375 }
+    prices: { "Chica": 180, "Mediana": 255, "Grande": 315, "Familiar": 375 },
+    type: "personalizable"
   },
   {
     id: "vegetariana",
@@ -103,7 +115,8 @@ export const menuItems = [
     description: "Champiñón, Cebolla, Pimiento V. y Aceituna Verde",
     category: "Pizzas",
     image: "/img/vegetariana..webp",
-    prices: { "Chica": 180, "Mediana": 255, "Grande": 315, "Familiar": 375 }
+    prices: { "Chica": 180, "Mediana": 255, "Grande": 315, "Familiar": 375 },
+    type: "personalizable"
   },
   {
     id: "chistorra",
@@ -111,7 +124,8 @@ export const menuItems = [
     description: "Chistorra y Champiñón",
     category: "Pizzas",
     image: "/img/chistorra.webp",
-    prices: { "Chica": 180, "Mediana": 255, "Grande": 315, "Familiar": 375 }
+    prices: { "Chica": 180, "Mediana": 255, "Grande": 315, "Familiar": 375 },
+    type: "personalizable"
   },
   {
     id: "clasica",
@@ -119,7 +133,8 @@ export const menuItems = [
     description: "Champiñón, Peperoni y Pimiento V.",
     category: "Pizzas",
     image: "/img/clasica..webp",
-    prices: { "Chica": 180, "Mediana": 255, "Grande": 315, "Familiar": 375 }
+    prices: { "Chica": 180, "Mediana": 255, "Grande": 315, "Familiar": 375 },
+    type: "personalizable"
   },
   {
     id: "campestre",
@@ -127,7 +142,8 @@ export const menuItems = [
     description: "Granos de elote, Jalapeño, Pollo y Chorizo",
     category: "Pizzas",
     image: "/img/campestre.webp",
-    prices: { "Chica": 180, "Mediana": 255, "Grande": 315, "Familiar": 375 }
+    prices: { "Chica": 180, "Mediana": 255, "Grande": 315, "Familiar": 375 },
+    type: "personalizable"
   },
   {
     id: "costilla-bbq",
@@ -135,7 +151,8 @@ export const menuItems = [
     description: "Costilla Ahumada, Salsa BBQ o Mango Habanero",
     category: "Pizzas",
     image: "/img/costilla.webp", // CORREGIDO: Usamos la misma de snacks si no tienes otra específica
-    prices: { "Chica": 180, "Mediana": 255, "Grande": 315, "Familiar": 375 }
+    prices: { "Chica": 180, "Mediana": 255, "Grande": 315, "Familiar": 375 },
+    type: "personalizable"
   },
   {
     id: "pirata",
@@ -143,7 +160,8 @@ export const menuItems = [
     description: "Atún, Chipotle, Cebolla y Aceitunas Verdes",
     category: "Pizzas",
     image: "/img/pirata..webp",
-    prices: { "Chica": 180, "Mediana": 255, "Grande": 315, "Familiar": 375 }
+    prices: { "Chica": 180, "Mediana": 255, "Grande": 315, "Familiar": 375 },
+    type: "personalizable"
   },
   {
     id: "italiana",
@@ -151,7 +169,8 @@ export const menuItems = [
     description: "Carne Molida de Res, Champiñón y Pimiento V.",
     category: "Pizzas",
     image: "/img/italiana.webp",
-    prices: { "Chica": 180, "Mediana": 255, "Grande": 315, "Familiar": 375 }
+    prices: { "Chica": 180, "Mediana": 255, "Grande": 315, "Familiar": 375 },
+    type: "personalizable"
   },
   {
     id: "fugazza",
@@ -159,7 +178,8 @@ export const menuItems = [
     description: "Palomitas de pollo, Salsa BBQ y Salsa Buffalo",
     category: "Pizzas",
     image: "/img/fugazza.webp",
-    prices: { "Chica": 180, "Mediana": 255, "Grande": 315, "Familiar": 375 }
+    prices: { "Chica": 180, "Mediana": 255, "Grande": 315, "Familiar": 375 },
+    type: "personalizable"
   },
 
   // --- 2. ESPECIALIDADES DEL MAR (Precios Específicos) ---
@@ -169,7 +189,8 @@ export const menuItems = [
     description: "Camarón",
     category: "Especialidades del Mar",
     image: "/img/camaron..webp",
-    prices: { "Chica": 200, "Mediana": 280, "Grande": 380, "Familiar": 480 }
+    prices: { "Chica": 200, "Mediana": 280, "Grande": 380, "Familiar": 480 },
+    type: "personalizable"
   },
   {
     id: "pizza-del-mar",
@@ -177,7 +198,8 @@ export const menuItems = [
     description: "Camarón, mejillón, pulpo, atún, aceitunas y cebolla",
     category: "Especialidades del Mar",
     image: "/img/del mar..webp", // CORREGIDO
-    prices: { "Chica": 250, "Mediana": 320, "Grande": 450, "Familiar": 540 }
+    prices: { "Chica": 250, "Mediana": 320, "Grande": 450, "Familiar": 540 },
+    type: "personalizable"
   },
 
   // --- 3. PAQUETES ---

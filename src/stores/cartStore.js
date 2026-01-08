@@ -30,7 +30,7 @@ export function addCartItem(item) {
   // Aseguramos que item tenga priceFull, si no lo tiene, usamos price
   const priceFull = item.priceFull || item.price;
   
-  // Guardamos el item con priceFull explícito para que la lógica 2x1 no falle
+  // Guardamos el item con priceFull explícito
   cartItems.set([...currentItems, { ...item, priceFull, uniqueId, addedAt: Date.now() }]);
   
   isCartOpen.set(true); 
@@ -44,7 +44,7 @@ export function toggleCart(isOpen) {
   isCartOpen.set(isOpen !== undefined ? isOpen : !isCartOpen.get());
 }
 
-// --- LÓGICA MAESTRA 2x1 (CORREGIDA PARA EVITAR NaN) ---
+// --- LÓGICA MAESTRA 2x1 (CORREGIDA Y BLINDADA) ---
 export const groupedCart = computed(cartItems, (items) => {
   let processedItems = [];
   let total = 0;
@@ -62,18 +62,30 @@ export const groupedCart = computed(cartItems, (items) => {
   Object.keys(pizzasBySize).forEach(size => {
     const list = [...pizzasBySize[size]];
     
-    // Ordenamos por precio descendente para emparejar las más caras
-    list.sort((a, b) => (b.priceFull || b.price) - (a.priceFull || a.price));
+    // Función auxiliar para obtener el precio REAL correcto
+    const getRealPrice = (pizza) => {
+        // 1. Intentamos leer el precio que viene en el objeto
+        let finalPrice = pizza.priceFull || pizza.price || 0;
+
+        // 2. AUTOCORRECCIÓN: Si tenemos la tabla de precios y el tamaño, forzamos el precio correcto.
+        // Esto arregla el bug si el botón agregó la pizza con precio de "Chica" ($180) pero es "Familiar" ($375)
+        if (pizza.prices && pizza.size && pizza.prices[pizza.size]) {
+            finalPrice = Number(pizza.prices[pizza.size]);
+        }
+        return finalPrice;
+    };
+
+    // Ordenamos usando el precio corregido (REAL) para emparejar bien
+    list.sort((a, b) => getRealPrice(b) - getRealPrice(a));
 
     while (list.length > 0) {
       const pizza1 = list.shift();
-      // Leemos el precio de forma segura (usa priceFull si existe, si no price, si no 0)
-      const p1Price = pizza1.priceFull || pizza1.price || 0;
+      const p1Price = getRealPrice(pizza1); // Usamos precio corregido
 
       if (list.length > 0) {
         // --- TENEMOS PAREJA (2x1) ---
         const pizza2 = list.shift();
-        const p2Price = pizza2.priceFull || pizza2.price || 0;
+        const p2Price = getRealPrice(pizza2); // Usamos precio corregido
         
         // La más cara define el precio del par
         const pairPrice = Math.max(p1Price, p2Price); 
@@ -89,7 +101,7 @@ export const groupedCart = computed(cartItems, (items) => {
         total += pairPrice;
       } else {
         // --- PIZZA SOLA (Individual con Descuento) ---
-        // Aplicamos 40% de descuento (precio * 0.6)
+        // Aplicamos 40% de descuento al precio REAL
         const individualPrice = Math.round(p1Price * 0.6);
         
         processedItems.push({

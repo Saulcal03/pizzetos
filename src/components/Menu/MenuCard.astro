@@ -1,6 +1,8 @@
 ---
 // src/components/Menu/MenuCard.astro
 import AddToCartBtn from './AddToCartBtn.jsx'; 
+// 1. IMPORTAMOS EL NUEVO COMPONENTE DE PRECIO
+import DynamicPrice from './DynamicPrice.jsx';
 
 const { 
   id, 
@@ -17,8 +19,7 @@ const {
 let displayPrice = price;
 
 if (!displayPrice && prices) {
-    // CORRECCIÓN: Agregamos .map(Number) para asegurar que sean números
-    // Esto elimina el error rojo porque le confirmamos al editor que son números.
+    // Convertimos los valores a números para evitar errores y encontrar el menor
     const priceValues = Object.values(prices).map(Number);
     
     if (priceValues.length > 0) {
@@ -26,7 +27,7 @@ if (!displayPrice && prices) {
     }
 }
 
-// Objeto para el botón
+// Objeto para el botón de añadir al carrito
 const productData = { 
     id, 
     name, 
@@ -44,7 +45,7 @@ const productData = {
   <div class="relative overflow-hidden aspect-video">
       <img src={image} alt={name} class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
       
-      {/* Etiqueta de categoría (opcional) */}
+      {/* Etiqueta de categoría */}
       <div class="absolute top-2 right-2 bg-black/60 backdrop-blur-md px-3 py-1 rounded-full border border-white/10">
         <span class="text-[10px] font-bold text-amber-500 uppercase tracking-widest">{category}</span>
       </div>
@@ -58,10 +59,9 @@ const productData = {
 
     <div class="mt-4 flex items-center justify-between gap-4">
         
-        <span class="text-xl font-bold text-amber-500">
-            {/* Precio calculado o base */}
-            ${displayPrice}
-        </span>
+        {/* 2. AQUÍ ESTÁ EL CAMBIO: Usamos el componente dinámico */}
+        {/* Le pasamos 'prices' (la lista de precios) y 'basePrice' (el precio más barato calculado arriba) */}
+        <DynamicPrice client:load prices={prices} basePrice={displayPrice} />
         
         <div class="w-32">
             <AddToCartBtn client:visible product={productData} />

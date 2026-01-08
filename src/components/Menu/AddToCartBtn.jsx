@@ -1,13 +1,32 @@
-import { openProductModal, addCartItem } from '../../stores/cartStore';
+// src/components/Menu/AddToCartBtn.jsx
+import { openProductModal, addCartItem, selectedGlobalSize } from '../../stores/cartStore';
 
 export default function AddToCartBtn({ product }) {
   
   const handleClick = () => {
-    // Si el producto es personalizable (Paquetes, Refrescos), abrimos modal
+    // 1. Leemos el tamaño que está seleccionado arriba (ej. "Familiar")
+    const currentSize = selectedGlobalSize.get();
+
+    // 2. LÓGICA INTELIGENTE:
+    // Si hay un tamaño seleccionado Y este producto tiene precio para ese tamaño (es una pizza)...
+    // ...lo agregamos DIRECTO al carrito con el precio correcto.
+    if (currentSize && product.prices && product.prices[currentSize]) {
+        const priceForSize = product.prices[currentSize];
+        
+        addCartItem({
+            ...product,
+            price: priceForSize,      // Ponemos el precio real (ej. 375)
+            priceFull: priceForSize,  // Importante para el descuento
+            size: currentSize         // Guardamos que es Familiar
+        });
+        return; // Terminamos aquí, NO abrimos el modal.
+    }
+
+    // 3. Si no hay tamaño seleccionado (o es un Paquete/Refresco), seguimos la lógica normal
     if (product.type === 'personalizable') {
         openProductModal(product);
     } else {
-        // Si es fijo (ej. Papas, Paquete 1), añadir directo
+        // Si es fijo (ej. Papas), añadir directo
         addCartItem(product);
     }
   };
