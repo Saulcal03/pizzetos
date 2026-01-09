@@ -1,6 +1,5 @@
 ---
 // src/layouts/Layout.astro
-// src/layouts/Layout.astro
 
 // 1. CORREGIMOS LAS RUTAS AQUÍ (Agregamos /Common/)
 import Navbar from '../components/Common/Navbar.astro';
@@ -8,6 +7,8 @@ import Footer from '../components/Common/Footer.astro';
 
 import CartFlyout from '../components/Cart/CartFlyout.jsx';
 import ProductModal from '../components/Menu/ProductModal.jsx'; 
+// --- NUEVO: Importamos el CheckoutModal ---
+import CheckoutModal from '../components/Cart/CheckoutModal.jsx'; 
 
 const { title } = Astro.props;
 ---
@@ -34,6 +35,9 @@ const { title } = Astro.props;
 
     <CartFlyout client:load />
     <ProductModal client:load />
+    
+    {/* --- NUEVO: Aquí va el Modal de Checkout para que funcione en toda la web --- */}
+    <CheckoutModal client:load />
 
   </body>
 </html>

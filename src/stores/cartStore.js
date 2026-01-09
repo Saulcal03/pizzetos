@@ -8,6 +8,9 @@ export const isModalOpen = atom(false);
 export const modalProduct = atom(null); 
 export const selectedGlobalSize = atom(null); 
 
+// --- NUEVO: Estado para el Checkout ---
+export const isCheckoutOpen = atom(false);
+
 // --- HELPERS ---
 export const cartCount = computed(cartItems, items => items.length);
 
@@ -42,6 +45,11 @@ export function removeCartItem(uniqueId) {
 
 export function toggleCart(isOpen) {
   isCartOpen.set(isOpen !== undefined ? isOpen : !isCartOpen.get());
+}
+
+// --- NUEVO: Función para abrir/cerrar Checkout ---
+export function toggleCheckout(isOpen) {
+  isCheckoutOpen.set(isOpen !== undefined ? isOpen : !isCheckoutOpen.get());
 }
 
 // --- LÓGICA MAESTRA 2x1 (CORREGIDA Y BLINDADA) ---
