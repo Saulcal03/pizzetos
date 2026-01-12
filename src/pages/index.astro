@@ -5,6 +5,10 @@ import MenuCard from '../components/Menu/MenuCard.astro';
 import SizeSelector from '../components/Menu/SizeSelector.jsx';
 import { menuItems } from '../data/menuData.js'; 
 import ProductModal from '../components/Menu/ProductModal.jsx';
+
+// --- NUEVA IMPORTACIÓN ---
+import Sucursales from '../components/Sections/Sucursales.astro';
+
 const allItems = menuItems || [];
 
 // 1. SEPARAMOS LOS DATOS
@@ -20,7 +24,7 @@ const extraCategories = ["Todos", "Paquetes", "Snacks", "Bebidas"];
 ---
 
 <Layout title="Pizzetos | Menú Premium">
-  <main class="bg-neutral-950 min-h-screen pb-20 relative font-body pt-28 overflow-hidden">
+  <main class="bg-neutral-950 min-h-screen pb-0 relative font-body pt-28 overflow-hidden">
     
     <div class="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[500px] bg-amber-600/10 rounded-full blur-[120px] pointer-events-none z-0"></div>
 
@@ -30,6 +34,7 @@ const extraCategories = ["Todos", "Paquetes", "Snacks", "Bebidas"];
       </h1>
     </section>
 
+    {/* --- PANTALLA 1: SELECTOR DE TAMAÑOS --- */}
     <div id="screen-sizes" class="transition-all duration-500 opacity-100 transform translate-x-0 pt-4 relative z-10">
       <SizeSelector client:load />
       
@@ -44,6 +49,7 @@ const extraCategories = ["Todos", "Paquetes", "Snacks", "Bebidas"];
       </div>
     </div>
 
+    {/* --- PANTALLA 2: GRID DE SABORES (PIZZAS) --- */}
     <div id="screen-flavors" class="hidden opacity-0 transform translate-x-10 transition-all duration-500 max-w-7xl mx-auto px-4 pt-4 relative z-10">
       
       <div class="sticky top-4 z-40 bg-neutral-950/95 backdrop-blur-xl py-4 -mx-4 px-4 border-b border-white/10 mb-8 shadow-2xl rounded-b-2xl">
@@ -102,6 +108,7 @@ const extraCategories = ["Todos", "Paquetes", "Snacks", "Bebidas"];
 
     </div>
 
+    {/* --- PANTALLA 3: EXTRAS (PAQUETES, SNACKS) --- */}
     <div id="screen-extras" class="hidden opacity-0 transform translate-y-10 transition-all duration-500 max-w-7xl mx-auto px-4 pt-4 relative z-10">
         
         <div class="flex items-center mb-8">
@@ -136,6 +143,12 @@ const extraCategories = ["Todos", "Paquetes", "Snacks", "Bebidas"];
         </div>
     </div>
 
+    {/* --- SECCIÓN SUCURSALES (SIEMPRE VISIBLE AL FINAL) --- */}
+    {/* Le ponemos el ID para que el link del Navbar funcione */}
+    <div id="sucursales" class="relative z-20 mt-20">
+       <Sucursales />
+    </div>
+
   </main>
   <ProductModal client:load />
 </Layout>
@@ -167,18 +180,20 @@ const extraCategories = ["Todos", "Paquetes", "Snacks", "Bebidas"];
   import { selectedGlobalSize } from '../stores/cartStore.js';
 
   function initAppLogic() {
-    // Referencias
+    // Referencias a las pantallas
     const screenSizes = document.getElementById('screen-sizes');
     const screenFlavors = document.getElementById('screen-flavors');
     const screenExtras = document.getElementById('screen-extras');
     
+    // Referencias a botones internos
     const displaySize = document.getElementById('display-selected-size');
     const btnBackSizes = document.getElementById('btn-back-sizes');
     const btnShowExtras = document.getElementById('btn-show-extras');
     const btnBackHome = document.getElementById('btn-back-home');
 
-    // --- 1. NAVEGACIÓN ---
-    const showScreen = (screenId = '') => {
+    // --- 1. FUNCIÓN PARA CAMBIAR PANTALLAS ---
+    const showScreen = (screenId) => {
+        // Ocultar todas primero
         [screenSizes, screenFlavors, screenExtras].forEach(s => {
             if (s) {
                 s.classList.add('hidden', 'opacity-0', 'pointer-events-none');
@@ -186,56 +201,97 @@ const extraCategories = ["Todos", "Paquetes", "Snacks", "Bebidas"];
             }
         });
 
+        // Mostrar la deseada
         const target = document.getElementById(screenId);
         if (target) {
             target.classList.remove('hidden');
+            // Pequeño delay para la animación suave
             setTimeout(() => {
                 target.classList.remove('opacity-0', 'pointer-events-none');
                 target.classList.add('translate-x-0', 'translate-y-0');
+                // Scroll arriba para que se vea bien
                 window.scrollTo({ top: 0, behavior: 'smooth' });
             }, 50);
         }
     };
 
-    // Store Suscription
+    // --- 2. CEREBRO DE NAVEGACIÓN ---
+    const handleNavigation = () => {
+        const hash = window.location.hash; // Detecta #paquetes, #snacks, etc.
+
+        if (hash === '#paquetes') {
+            selectedGlobalSize.set(null);
+            showScreen('screen-extras');
+            setTimeout(() => {
+                const btn = document.querySelector('.extra-cat-btn[data-filter="Paquetes"]');
+                if(btn) btn.click();
+            }, 100);
+
+        } else if (hash === '#snacks') {
+            selectedGlobalSize.set(null);
+            showScreen('screen-extras');
+            setTimeout(() => {
+                const btn = document.querySelector('.extra-cat-btn[data-filter="Snacks"]');
+                if(btn) btn.click();
+            }, 100);
+
+        } else if (hash === '#pizzas-especialidad') {
+            selectedGlobalSize.set(null);
+            showScreen('screen-sizes');
+        } 
+        // NOTA: No controlamos '#sucursales' aquí para dejar que el navegador haga scroll nativo
+    };
+
+    // Escuchar cambios en la URL (cuando haces clic en el menú)
+    window.addEventListener('hashchange', handleNavigation);
+    
+    // Verificar si ya viene con un link al cargar la página
+    handleNavigation();
+
+
+    // --- 3. LÓGICA ORIGINAL DE TU APP (STORE) ---
     selectedGlobalSize.subscribe(size => {
+        const hash = window.location.hash;
+        if(hash === '#paquetes' || hash === '#snacks') return; 
+
         if (size) {
             if(displaySize) displaySize.textContent = size;
             showScreen('screen-flavors');
         } else {
-            if(screenExtras && !screenExtras.classList.contains('opacity-100')) {
-                showScreen('screen-sizes');
-            }
+            if(screenExtras && !screenExtras.classList.contains('hidden')) return;
+            showScreen('screen-sizes');
         }
     });
 
     btnBackSizes?.addEventListener('click', () => selectedGlobalSize.set(null));
+    
     btnShowExtras?.addEventListener('click', () => {
-        selectedGlobalSize.set(null); 
+        selectedGlobalSize.set(null);
+        history.pushState("", document.title, window.location.pathname + window.location.search);
         showScreen('screen-extras');
     });
-    btnBackHome?.addEventListener('click', () => showScreen('screen-sizes'));
+
+    btnBackHome?.addEventListener('click', () => {
+        history.pushState("", document.title, window.location.pathname + window.location.search);
+        showScreen('screen-sizes');
+    });
 
 
-    // --- 2. BÚSQUEDA Y FILTROS (Sin errores rojos) ---
+    // --- 4. BÚSQUEDA Y FILTROS DE PIZZAS ---
     const searchInput = document.getElementById('pizza-search');
     const catButtons = document.querySelectorAll('.cat-btn');
     const pizzaItems = document.querySelectorAll('.pizza-item');
     const noResults = document.getElementById('no-pizza-results');
-
     let currentFilter = 'all';
 
     const filterPizzas = () => {
-        // Validación estricta para que no salga rojo en .value
         if (!(searchInput instanceof HTMLInputElement)) return;
-
         const term = searchInput.value.toLowerCase();
         let count = 0;
 
         pizzaItems.forEach(item => {
             const name = item.getAttribute('data-name');
             const category = item.getAttribute('data-category');
-            
             const matchesSearch = name && name.includes(term);
             const matchesCat = currentFilter === 'all' || category === currentFilter;
 
@@ -246,13 +302,10 @@ const extraCategories = ["Todos", "Paquetes", "Snacks", "Bebidas"];
                 item.classList.add('hidden');
             }
         });
-
         if(noResults) noResults.style.display = count === 0 ? 'block' : 'none';
     };
 
-    if (searchInput) {
-        searchInput.addEventListener('input', filterPizzas);
-    }
+    if (searchInput) searchInput.addEventListener('input', filterPizzas);
 
     catButtons.forEach(btn => {
         btn.addEventListener('click', () => {
@@ -263,7 +316,7 @@ const extraCategories = ["Todos", "Paquetes", "Snacks", "Bebidas"];
         });
     });
 
-    // --- 3. FILTROS EXTRAS (Sin errores rojos) ---
+    // --- 5. FILTROS EXTRAS ---
     const extraButtons = document.querySelectorAll('.extra-cat-btn');
     const extraItems = document.querySelectorAll('.extra-item');
 
@@ -287,10 +340,9 @@ const extraCategories = ["Todos", "Paquetes", "Snacks", "Bebidas"];
         });
     });
 
-    // Validación estricta para el click automático
-    const firstBtn = extraButtons[0];
-    if(firstBtn instanceof HTMLElement) {
-        firstBtn.click();
+    if(!window.location.hash && extraButtons.length > 0) {
+        const firstBtn = extraButtons[0];
+        if(firstBtn instanceof HTMLElement) firstBtn.click();
     }
   }
 
