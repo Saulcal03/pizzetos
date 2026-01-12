@@ -8,7 +8,7 @@ export default function SizeSelector() {
   const sizes = [
     { 
       id: 'Chica', 
-      label: 'Personal', 
+      label: 'Chica', 
       sub: 'Individual', 
       price: '$180',
       path: (
