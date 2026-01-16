@@ -5,6 +5,7 @@ import MenuCard from '../components/Menu/MenuCard.astro';
 import SizeSelector from '../components/Menu/SizeSelector.jsx';
 import { menuItems } from '../data/menuData.js'; 
 import ProductModal from '../components/Menu/ProductModal.jsx';
+import CreaTuPizza from '../components/Menu/CreaTuPizza.jsx'; 
 import Sucursales from '../components/Sections/Sucursales.astro';
 
 const allItems = menuItems || [];
@@ -37,6 +38,9 @@ const extraCategories = ["Todos", "Paquetes", "Snacks", "Bebidas"];
 
     {/* --- PANTALLA 1: SELECTOR DE TAMAÑOS --- */}
     <div id="screen-sizes" class="transition-all duration-500 opacity-100 transform translate-x-0 pt-2 md:pt-4 relative z-10 px-4">
+      
+      {/* (Aquí estaba el subtítulo, lo quité para limpiar la vista inicial) */}
+      
       <SizeSelector client:load />
       
       <div class="text-center mt-6 md:mt-8 animate-fade-in-up" style="animation-delay: 0.2s;">
@@ -50,72 +54,61 @@ const extraCategories = ["Todos", "Paquetes", "Snacks", "Bebidas"];
       </div>
     </div>
 
-    {/* --- PANTALLA 2: GRID DE SABORES (OPTIMIZADA) --- */}
-    <div id="screen-flavors" class="hidden opacity-0 transform translate-x-10 transition-all duration-500 max-w-7xl mx-auto px-2 md:px-4 pt-2 md:pt-4 relative z-10">
-      
-      {/* BARRA PEGAJOSA COMPACTA (Estilo App) */}
-      <div class="sticky top-20 z-40 bg-[#0f0f0f]/95 backdrop-blur-xl border-b border-white/10 shadow-2xl -mx-2 px-4 py-3 mb-6 transition-all">
+{/* --- PANTALLA 2: GRID DE SABORES (ALINEACIÓN PERFECTA) --- */}
+   <div 
+  id="screen-flavors" 
+  class="hidden opacity-0 transform translate-x-0 transition-all duration-500 w-full max-w-7xl mx-auto px-2 pt-0 md:pt-6 pb-32 relative z-10"
+>
+        {/* 1. BARRA PEGAJOSA */}
+        <div class="sticky top-0 md:top-20 z-40 bg-[#0f0f0f]/95 backdrop-blur-xl border-b border-white/10 shadow-2xl -mx-4 px-4 py-3 mb-6 transition-all">
         
-        {/* FILA 1 MÓVIL: Atrás + Buscador (Todo en una línea) */}
-        <div class="flex gap-3 items-center mb-3">
-            
-            {/* Botón Atrás (Solo ícono en móvil) */}
-            <button id="btn-back-sizes" class="flex-shrink-0 w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-white hover:bg-amber-500 hover:text-black transition-all group">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 group-hover:-translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-                </svg>
-            </button>
+            {/* FILA 1: Atrás + Buscador */}
+            <div class="flex gap-3 items-center mb-3">
+                <button id="btn-back-sizes" class="flex-shrink-0 w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-white hover:bg-amber-500 hover:text-black transition-all group">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 group-hover:-translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                    </svg>
+                </button>
 
-            {/* Buscador (Ocupa el resto del espacio) */}
-            <div class="relative flex-grow">
-                <input 
-                    type="text" 
-                    id="pizza-search" 
-                    placeholder="Buscar sabor..." 
-                    class="w-full bg-[#1a1a1a] border border-white/10 rounded-full py-2.5 pl-10 pr-4 text-white text-sm focus:outline-none focus:border-amber-500 focus:bg-[#252525] transition-all placeholder-neutral-500"
-                />
-                <svg class="absolute left-3.5 top-3 h-4 w-4 text-neutral-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                </svg>
+                <div class="relative flex-grow">
+                    <input type="text" id="pizza-search" placeholder="Buscar sabor..." class="w-full bg-[#1a1a1a] border border-white/10 rounded-full py-2.5 pl-10 pr-4 text-white text-sm focus:outline-none focus:border-amber-500 focus:bg-[#252525] transition-all placeholder-neutral-500"/>
+                    <svg class="absolute left-3.5 top-3 h-4 w-4 text-neutral-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                    </svg>
+                </div>
             </div>
 
-        </div>
-
-        {/* FILA 2 MÓVIL: Filtros + Info de Tamaño */}
-        <div class="flex items-center justify-between gap-4">
-            
-            {/* Filtros Scrollables */}
-            <div class="flex gap-2 overflow-x-auto pb-1 w-full scrollbar-hide mask-fade-right">
-                <button class="cat-btn active flex-shrink-0 text-xs py-1.5 px-4" data-filter="all">Todas</button>
-                <button class="cat-btn flex-shrink-0 text-xs py-1.5 px-4" data-filter="Pizzas">Clásicas</button>
-                <button class="cat-btn flex-shrink-0 text-xs py-1.5 px-4" data-filter="Especialidades del Mar">Del Mar</button>
-            </div>
-
-            {/* Indicador de Tamaño (Pequeño y elegante) */}
-            <div class="hidden sm:block text-right flex-shrink-0">
-                <span class="text-[10px] text-neutral-500 uppercase tracking-widest block">Tamaño</span>
-                <span id="display-selected-size" class="text-sm font-serif text-amber-500 italic font-bold">--</span>
+            {/* FILA 2: Filtros */}
+            <div class="flex items-center justify-between gap-4">
+                <div class="flex gap-2 overflow-x-auto pb-1 w-full scrollbar-hide mask-fade-right">
+                    <button class="cat-btn active flex-shrink-0 text-xs py-1.5 px-4" data-filter="all">Todas</button>
+                    <button class="cat-btn flex-shrink-0 text-xs py-1.5 px-4" data-filter="Pizzas">Clásicas</button>
+                    <button class="cat-btn flex-shrink-0 text-xs py-1.5 px-4" data-filter="Especialidades del Mar">Del Mar</button>
+                </div>
+                <div class="hidden sm:block text-right flex-shrink-0">
+                    <span class="text-[10px] text-neutral-500 uppercase tracking-widest block">Tamaño</span>
+                    <span id="display-selected-size" class="text-sm font-serif text-amber-500 italic font-bold">--</span>
+                </div>
             </div>
         </div>
-      </div>
 
-      {/* GRID DE PIZZAS (Ajustado) */}
-      <div id="pizza-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 pb-24 px-1">
-        {pizzas.map((item) => (
-          <div class="pizza-item" data-name={item.name.toLowerCase()} data-category={item.category}>
-            <MenuCard 
-              id={item.id} name={item.name} description={item.description} 
-              price={item.price} image={item.image} category={item.category}
-              prices={item.prices} type={item.type}
-            />
-          </div>
-        ))}
-      </div>
+        {/* 2. GRID DE PIZZAS */}
+        <div id="pizza-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 pb-32 w-full">
+            {pizzas.map((item) => (
+                <div class="pizza-item" data-name={item.name.toLowerCase()} data-category={item.category}>
+                    <MenuCard 
+                        id={item.id} name={item.name} description={item.description} 
+                        price={item.price} image={item.image} category={item.category}
+                        prices={item.prices} type={item.type}
+                    />
+                </div>
+            ))}
+        </div>
 
-      <div id="no-pizza-results" class="hidden text-center py-20">
-        <p class="text-neutral-500 text-lg">No encontramos pizzas con ese nombre.</p>
-        <button onclick="document.getElementById('pizza-search').value = ''; document.getElementById('pizza-search').dispatchEvent(new Event('input'));" class="text-amber-500 hover:underline mt-2">Borrar búsqueda</button>
-      </div>
+        <div id="no-pizza-results" class="hidden text-center py-20">
+            <p class="text-neutral-500 text-lg">No encontramos pizzas con ese nombre.</p>
+            <button onclick="document.getElementById('pizza-search').value = ''; document.getElementById('pizza-search').dispatchEvent(new Event('input'));" class="text-amber-500 hover:underline mt-2">Borrar búsqueda</button>
+        </div>
 
     </div>
 
@@ -154,6 +147,15 @@ const extraCategories = ["Todos", "Paquetes", "Snacks", "Bebidas"];
             ))}
         </div>
     </div>
+
+
+    {/* ========================================= */}
+    {/* SECCIÓN CREA TU PIZZA (MOVIDA AL FINAL)   */}
+    {/* ========================================= */}
+    <section class="relative z-20 max-w-5xl mx-auto px-4 mt-12 mb-20">
+       <CreaTuPizza client:visible />
+    </section>
+
 
     {/* --- SECCIÓN SUCURSALES --- */}
     <div id="sucursales" class="relative z-20 mt-12 md:mt-20">
@@ -217,6 +219,7 @@ const extraCategories = ["Todos", "Paquetes", "Snacks", "Bebidas"];
     const showScreen = (screenId) => {
         [screenSizes, screenFlavors, screenExtras].forEach(s => {
             if (s) {
+                // Ocultamos todos primero
                 s.classList.add('hidden', 'opacity-0', 'pointer-events-none');
                 s.classList.remove('translate-x-0', 'translate-y-0');
             }
@@ -225,6 +228,7 @@ const extraCategories = ["Todos", "Paquetes", "Snacks", "Bebidas"];
         const target = document.getElementById(screenId);
         if (target) {
             target.classList.remove('hidden');
+            // Timeout para permitir que el navegador procese el 'display: block' antes de la opacidad
             setTimeout(() => {
                 target.classList.remove('opacity-0', 'pointer-events-none');
                 target.classList.add('translate-x-0', 'translate-y-0');
@@ -233,10 +237,11 @@ const extraCategories = ["Todos", "Paquetes", "Snacks", "Bebidas"];
         }
     };
 
-    // --- 2. CEREBRO DE NAVEGACIÓN ---
+    // --- 2. CEREBRO DE NAVEGACIÓN (Hash) ---
     const handleNavigation = () => {
         const hash = window.location.hash;
 
+        // Si hay hash de paquetes/snacks, forzamos esa vista
         if (hash === '#paquetes') {
             selectedGlobalSize.set(null);
             showScreen('screen-extras');
@@ -253,6 +258,13 @@ const extraCategories = ["Todos", "Paquetes", "Snacks", "Bebidas"];
                 if(btn) btn.click();
             }, 100);
 
+        // --- NUEVO: Lógica para el botón MENÚ ---
+        } else if (hash === '#menu') {
+            selectedGlobalSize.set(null); // Resetea la pizza seleccionada
+            showScreen('screen-sizes');   // Muestra la pantalla de inicio
+            // Opcional: Si quieres limpiar la URL visualmente
+            // history.replaceState(null, null, ' '); 
+        
         } else if (hash === '#pizzas-especialidad') {
             selectedGlobalSize.set(null);
             showScreen('screen-sizes');
@@ -260,37 +272,60 @@ const extraCategories = ["Todos", "Paquetes", "Snacks", "Bebidas"];
     };
 
     window.addEventListener('hashchange', handleNavigation);
-    handleNavigation();
+    // Ejecutar al inicio solo si hay hash
+    if(window.location.hash) handleNavigation();
 
-    // --- 3. LÓGICA DE STORE ---
+
+    // --- 3. LÓGICA DE STORE (REACTIVIDAD) ---
     selectedGlobalSize.subscribe(size => {
         const hash = window.location.hash;
+        // Si estamos en modo paquetes (por URL), ignoramos cambios de store que intenten mandarnos a Sizes
         if(hash === '#paquetes' || hash === '#snacks') return; 
 
         if (size) {
             if(displaySize) displaySize.textContent = size;
             showScreen('screen-flavors');
         } else {
-            if(screenExtras && !screenExtras.classList.contains('hidden')) return;
-            showScreen('screen-sizes');
+            // Verificamos si la pantalla de extras está visible visualmente para no cerrarla de golpe
+            if(screenExtras && !screenExtras.classList.contains('hidden')) {
+                return;
+            }
+            // Si el hash es #menu, ya lo manejamos en handleNavigation, pero por seguridad:
+            if(hash !== '#menu') {
+                 showScreen('screen-sizes');
+            }
         }
     });
 
-    btnBackSizes?.addEventListener('click', () => selectedGlobalSize.set(null));
+    // --- 4. BOTONES Y NAVEGACIÓN MANUAL ---
     
+    // Botón Atrás (Sabores -> Tamaños)
+    btnBackSizes?.addEventListener('click', () => {
+        history.pushState("", document.title, window.location.pathname + window.location.search);
+        selectedGlobalSize.set(null);
+        showScreen('screen-sizes');
+    });
+    
+    // Botón Ver Paquetes (Tamaños -> Paquetes)
     btnShowExtras?.addEventListener('click', () => {
         selectedGlobalSize.set(null);
-        history.pushState("", document.title, window.location.pathname + window.location.search);
+        history.pushState(null, null, '#paquetes'); 
         showScreen('screen-extras');
+        setTimeout(() => {
+             const btn = document.querySelector('.extra-cat-btn[data-filter="Paquetes"]');
+             if(btn) btn.click();
+        }, 50);
     });
 
+    // Botón Volver al Inicio (Paquetes -> Tamaños)
     btnBackHome?.addEventListener('click', () => {
         history.pushState("", document.title, window.location.pathname + window.location.search);
+        selectedGlobalSize.set(null);
         showScreen('screen-sizes');
     });
 
 
-    // --- 4. BÚSQUEDA Y FILTROS ---
+    // --- 5. BÚSQUEDA Y FILTROS ---
     const searchInput = document.getElementById('pizza-search');
     const catButtons = document.querySelectorAll('.cat-btn');
     const pizzaItems = document.querySelectorAll('.pizza-item');
@@ -329,7 +364,7 @@ const extraCategories = ["Todos", "Paquetes", "Snacks", "Bebidas"];
         });
     });
 
-    // --- 5. FILTROS EXTRAS ---
+    // --- 6. FILTROS EXTRAS ---
     const extraButtons = document.querySelectorAll('.extra-cat-btn');
     const extraItems = document.querySelectorAll('.extra-item');
 

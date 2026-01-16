@@ -2,12 +2,11 @@
 // src/components/Common/Navbar.astro
 import CartCounter from './CartCounter.jsx';
 
-// Definimos los enlaces exactos para que coincidan con tu lógica del index
 const navLinks = [
-  { name: 'Menú', href: '#menu' },    // Menú lleva al inicio (selector de pizzas)
-  { name: 'Paquetes', href: '#paquetes' }, // Activa vista de extras
-  { name: 'Snacks', href: '#snacks' },     // Activa vista de extras
-  { name: 'Sucursales', href: '#sucursales' } // Scroll abajo
+  { name: 'Menú', href: '#menu' },
+  { name: 'Paquetes', href: '#paquetes' },
+  { name: 'Snacks', href: '#snacks' },
+  { name: 'Sucursales', href: '#sucursales' }
 ];
 ---
 
@@ -16,12 +15,11 @@ const navLinks = [
   class="fixed top-0 w-full z-50 transition-all duration-500 border-b border-transparent"
 >
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-    <div class="flex justify-between items-center h-20">
+    <div class="flex justify-between items-center h-20 relative z-50">
       
       {/* --- LOGO --- */}
       <div class="flex-shrink-0 flex items-center">
         <a href="#inicio" class="group flex items-center gap-3">
-          {/* Ícono Pizza con fondo sutil */}
           <div class="bg-brand-yellow/10 p-2 rounded-full border border-brand-yellow/20 group-hover:bg-brand-yellow group-hover:text-black text-brand-yellow transition-all duration-300">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 transform group-hover:rotate-12 transition-transform duration-300" viewBox="0 0 24 24" fill="currentColor">
               <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-5.5-2.5l7.51-3.22-3.22-7.51-7.51 3.22 3.22 7.51z"/>
@@ -41,70 +39,163 @@ const navLinks = [
             class="text-sm uppercase tracking-widest font-semibold text-gray-300 hover:text-white transition-colors duration-300 relative group py-2"
           >
             {link.name}
-            {/* Línea animada (Underline effect) */}
             <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-brand-yellow group-hover:w-full transition-all duration-300 ease-out shadow-[0_0_8px_#F59E0B]"></span>
           </a>
         ))}
       </nav>
 
-      {/* --- BOTÓN CARRITO --- */}
+      {/* --- BOTÓN CARRITO (Desktop) --- */}
       <div class="hidden md:flex items-center">
         <button 
           id="cart-btn-desktop" 
           class="group relative overflow-hidden bg-brand-yellow text-brand-dark px-6 py-2.5 rounded-full font-bold text-sm shadow-[0_4px_14px_rgba(245,158,11,0.4)] hover:shadow-[0_6px_20px_rgba(245,158,11,0.6)] hover:-translate-y-0.5 transition-all duration-300 flex items-center gap-3 ring-2 ring-transparent hover:ring-white/20"
         >
-            {/* Brillo interno sutil */}
             <div class="absolute inset-0 bg-white/20 group-hover:bg-transparent transition-colors duration-300"></div>
-            
             <div class="relative z-10 flex items-center gap-2">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 transition-transform group-hover:scale-110" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
                 </svg>
                 <span class="tracking-wide">TU PEDIDO</span>
             </div>
-            
             <span class="relative z-10 bg-black text-white text-xs font-bold px-2.5 py-0.5 rounded-full border border-white/10">
                <CartCounter client:load />
             </span>
         </button>
       </div>
       
-      {/* --- MENÚ MÓVIL (Hamburguesa) --- */}
+      {/* --- BOTÓN HAMBURGUESA / CERRAR (Móvil) --- */}
       <div class="md:hidden flex items-center">
-        <button class="text-white hover:text-brand-yellow bg-white/5 hover:bg-white/10 p-2 rounded-lg backdrop-blur-sm transition-all duration-300 border border-white/5">
-          <svg class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <button 
+          id="mobile-menu-btn" 
+          class="text-white hover:text-brand-yellow relative z-50 p-2 focus:outline-none transition-colors duration-300"
+        >
+          {/* Icono Hamburguesa (Se muestra cuando menú está cerrado) */}
+          <svg id="icon-menu" class="h-8 w-8 transition-transform duration-300 transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+          </svg>
+          
+          {/* Icono X (Se muestra cuando menú está abierto) */}
+          <svg id="icon-close" class="h-8 w-8 hidden transition-transform duration-300 transform rotate-90" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
           </svg>
         </button>
       </div>
 
     </div>
   </div>
+
+  {/* --- MENÚ DESPLEGABLE MÓVIL (Full Screen) --- */}
+  <div 
+    id="mobile-menu" 
+    class="fixed inset-0 z-40 bg-[#0f0f0f]/98 backdrop-blur-xl opacity-0 invisible transition-all duration-300 flex flex-col justify-center items-center"
+  >
+      {/* Decoración de fondo */}
+      <div class="absolute top-0 right-0 w-64 h-64 bg-brand-yellow/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2"></div>
+      <div class="absolute bottom-0 left-0 w-64 h-64 bg-brand-yellow/5 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2"></div>
+
+      <div class="relative z-10 w-full px-8 space-y-8 text-center">
+          
+          <nav class="flex flex-col space-y-6">
+            {navLinks.map((link, index) => (
+                <a 
+                href={link.href} 
+                class="text-3xl md:text-4xl font-display font-bold text-gray-300 hover:text-brand-yellow transition-colors duration-300 transform hover:scale-105"
+                style={`transition-delay: ${index * 50}ms`}
+                >
+                {link.name}
+                </a>
+            ))}
+          </nav>
+
+          <div class="w-16 h-1 bg-white/10 rounded-full mx-auto"></div>
+
+          {/* Botón Carrito Gigante */}
+          <button 
+            id="cart-btn-mobile"
+            class="w-full max-w-xs mx-auto bg-brand-yellow text-black font-bold py-4 rounded-2xl flex justify-center items-center gap-3 shadow-[0_10px_30px_-10px_rgba(245,158,11,0.5)] hover:shadow-[0_20px_40px_-10px_rgba(245,158,11,0.6)] transition-all active:scale-95"
+          >
+             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+             </svg>
+             <span class="text-lg tracking-wide">VER TU PEDIDO</span>
+             <span class="bg-black text-white text-sm px-3 py-1 rounded-full">
+                <CartCounter client:load />
+             </span>
+          </button>
+      </div>
+  </div>
+
 </header>
 
 <script>
   import { isCartOpen } from '../../stores/cartStore';
 
-  // 1. Abrir Carrito
-  const btn = document.getElementById('cart-btn-desktop');
-  if (btn) {
-    btn.addEventListener('click', () => {
-      isCartOpen.set(true); 
+  // Lógica de Carrito
+  const openCart = () => isCartOpen.set(true);
+  document.getElementById('cart-btn-desktop')?.addEventListener('click', openCart);
+
+  // Lógica Menú Móvil
+  const menuBtn = document.getElementById('mobile-menu-btn');
+  const mobileMenu = document.getElementById('mobile-menu');
+  const iconMenu = document.getElementById('icon-menu');
+  const iconClose = document.getElementById('icon-close');
+  const btnMobileCart = document.getElementById('cart-btn-mobile');
+
+  function toggleMenu() {
+    // 1. Mostrar/Ocultar Menú (usando opacity y visibility para animación)
+    const isClosed = mobileMenu.classList.contains('invisible');
+    
+    if (isClosed) {
+        // ABRIR
+        mobileMenu.classList.remove('invisible', 'opacity-0');
+        mobileMenu.classList.add('visible', 'opacity-100');
+        
+        // Cambiar icono
+        iconMenu.classList.add('hidden');
+        iconClose.classList.remove('hidden');
+        
+        // Bloquear scroll del body
+        document.body.style.overflow = 'hidden';
+    } else {
+        // CERRAR
+        mobileMenu.classList.add('invisible', 'opacity-0');
+        mobileMenu.classList.remove('visible', 'opacity-100');
+        
+        // Cambiar icono
+        iconMenu.classList.remove('hidden');
+        iconClose.classList.add('hidden');
+        
+        // Reactivar scroll
+        document.body.style.overflow = '';
+    }
+  }
+
+  if (menuBtn) {
+    menuBtn.addEventListener('click', toggleMenu);
+  }
+
+  // Cerrar menú al dar click en un enlace
+  mobileMenu?.querySelectorAll('a').forEach(link => {
+    link.addEventListener('click', toggleMenu);
+  });
+
+  // Botón carrito móvil
+  if (btnMobileCart) {
+    btnMobileCart.addEventListener('click', () => {
+        openCart();
+        toggleMenu(); // Cerrar menú al abrir carrito
     });
   }
 
-  // 2. Efecto Glassmorphism al Scroll
+  // Scroll Effect Navbar
   const navbar = document.getElementById('main-navbar');
-  
   window.addEventListener('scroll', () => {
-    if (window.scrollY > 20) { // Reduje a 20 para que reaccione antes
-      // Estado con Scroll: Fondo oscuro, desenfoque (blur), borde inferior sutil
-      navbar.classList.add('bg-[#1a1a1a]/90', 'backdrop-blur-md', 'shadow-lg', 'border-white/10', 'py-0');
-      navbar.classList.remove('border-transparent', 'py-2');
+    if (window.scrollY > 20) {
+      navbar.classList.add('bg-[#1a1a1a]/90', 'backdrop-blur-md', 'shadow-lg');
+      navbar.classList.remove('border-transparent');
     } else {
-      // Estado Inicial: Transparente y más espaciado
-      navbar.classList.remove('bg-[#1a1a1a]/90', 'backdrop-blur-md', 'shadow-lg', 'border-white/10', 'py-0');
-      navbar.classList.add('border-transparent', 'py-2');
+      navbar.classList.remove('bg-[#1a1a1a]/90', 'backdrop-blur-md', 'shadow-lg');
+      navbar.classList.add('border-transparent');
     }
   });
 </script>
