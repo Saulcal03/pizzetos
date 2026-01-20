@@ -7,4 +7,8 @@ export default defineConfig({
     tailwind(),
     react()
   ],
+
+  devToolbar: {
+    enabled: false
+  }
 });

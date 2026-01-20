@@ -8,9 +8,7 @@ const branches = [
     phone: "55 8445 7355",
     whatsapp: "5215584457355",
     address: "Carretera Chalco Manzana 005, Miraflores, 56645 San Mateo Tezoquipan, Méx.",
-    // ENLACE EXACTO QUE TÚ ME DISTE (Miraflores)
-    mapSrc: "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3767.2747816508877!2d-98.82283609999999!3d19.2268527!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x85ce238804835549%3A0x43851c3376b61468!2sPizzeto%20Pizza%20-%20Miraflores!5e0!3m2!1ses-419!2smx!4v1767981935064!5m2!1ses-419!2smx",
-    // Enlace inteligente para App de celular
+    mapSrc: "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3767.2747816508877!2d-98.82283609999999!3d19.2268527!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x85ce238804835549%3A0x43851c3376b61468!2sPizzeto%20Pizza%20-%20Miraflores!5e0!3m2!1ses-419!2smx!4v1767981935064!5m2!1ses-419!2smx", // Tu enlace real aquí
     googleMapsLink: "https://www.google.com/maps/search/?api=1&query=Pizzetos+Pizza+Miraflores+Carretera+Chalco"
   },
   {
@@ -19,27 +17,28 @@ const branches = [
     phone: "55 7395 9109",
     whatsapp: "5215573959109",
     address: "Av. López Mateos 63, Alcanfores Parcela Bezana Inclan, 56600 Chalco, Méx.",
-    // ENLACE EXACTO QUE TÚ ME DISTE (Chalco)
-    mapSrc: "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3765.9880221909752!2d-98.8965620250171!3d19.28288708196469!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x85ce1fd21c18140f%3A0x812899a5f2bfc80a!2sPizzetos%20Pizza%20Chalco!5e0!3m2!1ses-419!2smx!4v1767982679278!5m2!1ses-419!2smx",
-    // Enlace inteligente para App de celular
+    mapSrc: "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3765.9880221909752!2d-98.8965620250171!3d19.28288708196469!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x85ce1fd21c18140f%3A0x812899a5f2bfc80a!2sPizzetos%20Pizza%20Chalco!5e0!3m2!1ses-419!2smx!4v1767982679278!5m2!1ses-419!2smx", // Tu enlace real aquí
     googleMapsLink: "https://www.google.com/maps/search/?api=1&query=Pizzetos+Pizza+Chalco+Av+Lopez+Mateos+63"
   }
 ];
 ---
 
+{/* Se eliminó bg-neutral-950, ahora es transparente o hereda el #f5f5f4 del main */}
 <section id="sucursales" class="py-24 relative overflow-hidden">
   
-  {/* Fondo decorativo sutil */}
-  <div class="absolute top-0 right-0 w-[500px] h-[500px] bg-amber-600/5 rounded-full blur-[100px] pointer-events-none"></div>
+  {/* Fondo decorativo sutil (ajustado para modo claro) */}
+  <div class="absolute top-0 right-0 w-[500px] h-[500px] bg-amber-500/10 rounded-full blur-[100px] pointer-events-none"></div>
 
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
     
     {/* Encabezado de Sección */}
     <div class="text-center mb-16">
-      <h2 class="font-serif italic text-4xl md:text-5xl text-white mb-4">
+      {/* Título: text-white -> text-neutral-900 */}
+      <h2 class="font-serif italic text-4xl md:text-5xl text-neutral-900 mb-4">
         Encuéntranos
       </h2>
-      <p class="text-gray-400 max-w-2xl mx-auto text-sm md:text-base uppercase tracking-widest">
+      {/* Subtítulo: text-gray-400 -> text-neutral-500 */}
+      <p class="text-neutral-500 max-w-2xl mx-auto text-sm md:text-base uppercase tracking-widest">
         Visítanos en nuestras sucursales o pide a domicilio.
       </p>
       <div class="w-24 h-1 bg-amber-500 mx-auto mt-6 rounded-full"></div>
@@ -48,7 +47,8 @@ const branches = [
     {/* Grid de Sucursales */}
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12">
       {branches.map((sucursal) => (
-        <div class="group relative bg-[#1a1a1a] border border-white/10 rounded-3xl overflow-hidden hover:border-amber-500/50 transition-all duration-500 hover:shadow-[0_0_30px_rgba(245,158,11,0.1)] flex flex-col">
+        /* TARJETA: bg-[#1a1a1a] -> bg-white, border-white/10 -> border-black/5 */
+        <div class="group relative bg-white border border-black/5 rounded-3xl overflow-hidden hover:border-amber-500/30 transition-all duration-500 hover:shadow-xl shadow-sm flex flex-col">
           
           {/* Brillo al hover */}
           <div class="absolute inset-0 bg-gradient-to-br from-amber-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
@@ -57,13 +57,15 @@ const branches = [
             {/* Header de la Tarjeta */}
             <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
               <div>
-                <h3 class="text-2xl font-serif text-white font-bold mb-1">{sucursal.name}</h3>
-                <div class="flex items-center gap-2 text-green-500 text-xs font-bold tracking-wider uppercase">
+                {/* Nombre: text-white -> text-neutral-900 */}
+                <h3 class="text-2xl font-serif text-neutral-900 font-bold mb-1">{sucursal.name}</h3>
+                <div class="flex items-center gap-2 text-green-600 text-xs font-bold tracking-wider uppercase">
                   <span class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
                   Disponible
                 </div>
               </div>
-              <div class="bg-white/5 p-3 rounded-full text-amber-500 border border-white/10">
+              {/* Icono Casa: Fondo negro suave en vez de blanco/5 */}
+              <div class="bg-black/5 p-3 rounded-full text-amber-600 border border-black/5">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
@@ -74,15 +76,15 @@ const branches = [
             {/* Información de Contacto */}
             <div class="space-y-4 mb-8 flex-1">
               {/* Dirección */}
-              <div class="flex items-start gap-3 text-gray-400 group-hover:text-gray-200 transition-colors">
-                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mt-1 text-amber-500 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <div class="flex items-start gap-3 text-neutral-500 group-hover:text-neutral-800 transition-colors">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mt-1 text-amber-500 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0121 18.382V7.618a1 1 0 01-.806-.982l-4.747-2.374m0 0l-6 3m6-3V5" />
-                 </svg>
-                 <p class="text-sm leading-relaxed">{sucursal.address}</p>
+                  </svg>
+                  <p class="text-sm leading-relaxed">{sucursal.address}</p>
               </div>
 
               {/* Teléfono */}
-              <div class="flex items-center gap-3 text-gray-400 group-hover:text-white transition-colors">
+              <div class="flex items-center gap-3 text-neutral-500 group-hover:text-neutral-900 transition-colors">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-amber-500 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
                 </svg>
@@ -95,14 +97,15 @@ const branches = [
               <a 
                 href={`https://wa.me/${sucursal.whatsapp}`} 
                 target="_blank" 
-                class="bg-green-600/90 hover:bg-green-500 text-white font-bold py-3 px-4 rounded-xl shadow-lg hover:shadow-green-500/20 hover:-translate-y-1 transition-all flex items-center justify-center gap-2 text-sm"
+                class="bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-4 rounded-xl shadow-lg hover:shadow-green-500/20 hover:-translate-y-1 transition-all flex items-center justify-center gap-2 text-sm"
               >
                 <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.013-.967-.255-.099-.44-.15-.624.15-.183.299-.715.867-.876 1.05-.161.179-.322.199-.619.05-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.248-.57-.397M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0m0 22c-5.523 0-10-4.477-10-10S6.477 2 12 2s10 4.477 10 10-4.477 10-10 10"/></svg>
                 Pedir
               </a>
               
+              {/* Botón Mapa: Estilos invertidos para fondo claro */}
               <button 
-                class="map-toggle-btn border border-white/20 text-gray-300 font-bold py-3 px-4 rounded-xl hover:bg-white/10 hover:text-white transition-all flex items-center justify-center gap-2 text-sm"
+                class="map-toggle-btn border border-black/10 text-neutral-500 font-bold py-3 px-4 rounded-xl hover:bg-black/5 hover:text-neutral-900 transition-all flex items-center justify-center gap-2 text-sm"
                 data-target={`map-${sucursal.id}`}
               >
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-amber-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -115,8 +118,7 @@ const branches = [
 
             {/* Contenedor del Mapa (Acordeón) */}
             <div id={`map-${sucursal.id}`} class="map-container overflow-hidden max-h-0 transition-all duration-500 ease-in-out mt-0 opacity-50 relative">
-               <div class="mt-4 rounded-xl overflow-hidden border border-white/10 relative">
-                  {/* AQUÍ VA EL MAPA INSERTADO */}
+               <div class="mt-4 rounded-xl overflow-hidden border border-black/10 relative">
                   <iframe 
                     src={sucursal.mapSrc} 
                     width="100%" 
@@ -128,8 +130,8 @@ const branches = [
                     class="grayscale hover:grayscale-0 transition-all duration-500"
                   ></iframe>
                   
-                  {/* Botón Flotante para abrir App Externa */}
-                  <a href={sucursal.googleMapsLink} target="_blank" class="absolute bottom-2 right-2 bg-white text-black text-xs font-bold px-3 py-1 rounded shadow hover:bg-gray-200 transition-colors z-20 flex items-center gap-1">
+                  {/* Botón flotante del mapa */}
+                  <a href={sucursal.googleMapsLink} target="_blank" class="absolute bottom-2 right-2 bg-neutral-900 text-white text-xs font-bold px-3 py-1 rounded shadow hover:bg-black transition-colors z-20 flex items-center gap-1">
                     Abrir en Maps <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" /></svg>
                   </a>
                </div>
@@ -149,7 +151,6 @@ const branches = [
 
   mapButtons.forEach(btn => {
     btn.addEventListener('click', () => {
-      // CORRECCIÓN AQUÍ: Agregamos || "" para asegurar que siempre sea un texto
       const targetId = btn.getAttribute('data-target') || "";
       
       const mapContainer = document.getElementById(targetId);
@@ -158,8 +159,7 @@ const branches = [
       if (mapContainer) {
         if (mapContainer.style.maxHeight) {
           // Cerrar
-          mapContainer.style.maxHeight = ""; // Usamos "" en lugar de null
-          
+          mapContainer.style.maxHeight = ""; 
           mapContainer.classList.remove('opacity-100');
           mapContainer.classList.add('opacity-50');
           if(btnText) btnText.textContent = "Ver Mapa";

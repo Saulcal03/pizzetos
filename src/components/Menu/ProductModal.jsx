@@ -4,14 +4,14 @@ import { isModalOpen, modalProduct, closeProductModal, addCartItem, selectedGlob
 import { menuItems, opcionesRefrescos } from '../../data/menuData'; 
 import { useState, useEffect, useMemo } from 'react';
 
-// --- COMPONENTES VISUALES EXTERNOS (OPTIMIZADOS) ---
+// --- COMPONENTES VISUALES EXTERNOS (TEMA CLARO PREMIUM) ---
 
 const OptionPills = ({ title, options, selected, onSelect, icon }) => {
   if (!options || options.length === 0) return null;
 
   return (
     <div className="mb-4">
-      <label className="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2 flex items-center gap-2">
+      <label className="block text-xs font-bold text-stone-500 uppercase tracking-wider mb-2 flex items-center gap-2">
         {icon && <i className={`fa-solid ${icon} text-amber-500`}></i>}
         {title}
       </label>
@@ -23,8 +23,8 @@ const OptionPills = ({ title, options, selected, onSelect, icon }) => {
             className={`
               px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 border
               ${selected === opt 
-                ? 'bg-amber-500 text-black border-amber-500 shadow-lg shadow-amber-500/20 transform scale-105' 
-                : 'bg-neutral-800 text-gray-400 border-neutral-700 hover:border-gray-500 hover:bg-neutral-750'
+                ? 'bg-amber-500 text-white border-amber-500 shadow-md shadow-amber-500/30 transform scale-105' 
+                : 'bg-white text-stone-600 border-stone-200 hover:border-amber-400 hover:text-amber-600'
               }
             `}
           >
@@ -42,12 +42,12 @@ const SelectionCard = ({ label, value, selected, onSelect, iconClass }) => (
         className={`
             flex-1 p-4 rounded-xl border-2 transition-all duration-300 flex flex-col items-center gap-2
             ${selected === value 
-                ? 'border-amber-500 bg-amber-500/10 text-white shadow-[0_0_15px_rgba(245,158,11,0.2)]' 
-                : 'border-neutral-700 bg-neutral-800/50 text-gray-500 hover:border-neutral-500 hover:bg-neutral-800'
+                ? 'border-amber-500 bg-amber-50 text-amber-800 shadow-md' 
+                : 'border-stone-200 bg-white text-stone-500 hover:border-amber-300 hover:bg-stone-50'
             }
         `}
     >
-        <i className={`fa-solid ${iconClass} text-2xl ${selected === value ? 'text-amber-500' : 'text-gray-600'}`}></i>
+        <i className={`fa-solid ${iconClass} text-2xl ${selected === value ? 'text-amber-500' : 'text-stone-400'}`}></i>
         <span className="font-bold text-sm">{label}</span>
         {selected === value && <div className="w-2 h-2 rounded-full bg-amber-500 mt-1"></div>}
     </button>
@@ -74,19 +74,19 @@ const FlavorSelector = ({ slots, labels, selections, setSelections, activeFlavor
                  className={`
                    relative p-3 rounded-xl border-2 text-left transition-all overflow-hidden h-20 flex flex-col justify-center
                    ${activeFlavorSlot === slotNum 
-                     ? 'border-amber-500 bg-amber-500/10 shadow-[0_0_15px_rgba(245,158,11,0.2)]' 
-                     : 'border-neutral-700 bg-neutral-800 hover:bg-neutral-750'
+                     ? 'border-amber-500 bg-amber-50 shadow-md' 
+                     : 'border-stone-200 bg-white hover:bg-stone-50'
                    }
                  `}
                >
                  {selectedPizza && (
-                   <img src={selectedPizza.image} alt="" className="absolute inset-0 w-full h-full object-cover opacity-30 blur-[1px]" />
+                   <img src={selectedPizza.image} alt="" className="absolute inset-0 w-full h-full object-cover opacity-20 blur-[1px]" />
                  )}
                  <div className="relative z-10">
-                   <span className="text-[10px] text-amber-500 font-bold uppercase tracking-wider block">
+                   <span className="text-[10px] text-amber-600 font-bold uppercase tracking-wider block">
                      {labels[idx] || `Opción ${slotNum}`}
                    </span>
-                   <span className="text-sm font-bold text-white leading-tight block truncate">
+                   <span className={`text-sm font-bold leading-tight block truncate ${selectedFlavorName ? 'text-stone-800' : 'text-stone-400'}`}>
                      {selectedFlavorName || "Toca para elegir"}
                    </span>
                  </div>
@@ -97,9 +97,9 @@ const FlavorSelector = ({ slots, labels, selections, setSelections, activeFlavor
 
         {/* Grilla de Opciones */}
         <div>
-           <label className="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">
+           <label className="block text-xs font-bold text-stone-500 uppercase tracking-wider mb-2">
              <i className="fa-solid fa-pizza-slice text-amber-500 mr-2"></i>
-             Elige sabor para: <span className="text-white">Opción {activeFlavorSlot}</span>
+             Elige sabor para: <span className="text-stone-800 font-black">Opción {activeFlavorSlot}</span>
            </label>
            
            <div className="grid grid-cols-3 sm:grid-cols-4 gap-2 max-h-[250px] overflow-y-auto custom-scrollbar pr-1">
@@ -118,16 +118,16 @@ const FlavorSelector = ({ slots, labels, selections, setSelections, activeFlavor
                      if (activeFlavorSlot < slots) setActiveFlavorSlot(activeFlavorSlot + 1);
                    }}
                    className={`
-                     group relative rounded-lg overflow-hidden aspect-square border transition-all
-                     ${isSelected ? 'border-amber-500 ring-2 ring-amber-500/50' : 'border-transparent opacity-70 hover:opacity-100'}
+                     group relative rounded-lg overflow-hidden aspect-square border transition-all shadow-sm
+                     ${isSelected ? 'border-amber-500 ring-2 ring-amber-500/50' : 'border-stone-200 opacity-90 hover:opacity-100 hover:border-amber-300'}
                    `}
                  >
                    <img src={pizza.image} alt={pizza.name} className="w-full h-full object-cover" loading="lazy" />
-                   <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent p-2 flex items-end">
-                     <span className="text-[10px] font-bold text-white leading-tight">{pizza.name}</span>
+                   <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent p-2 flex items-end">
+                     <span className="text-[10px] font-bold text-white leading-tight drop-shadow-md">{pizza.name}</span>
                    </div>
                    {isSelected && (
-                     <div className="absolute top-1 right-1 bg-amber-500 text-black w-5 h-5 rounded-full flex items-center justify-center text-xs shadow-lg">
+                     <div className="absolute top-1 right-1 bg-amber-500 text-white w-5 h-5 rounded-full flex items-center justify-center text-xs shadow-lg">
                        <i className="fa-solid fa-check"></i>
                      </div>
                    )}
@@ -214,7 +214,7 @@ export default function ProductModal() {
             />
             
             <div>
-              <label className="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2 flex items-center gap-2">
+              <label className="block text-xs font-bold text-stone-500 uppercase tracking-wider mb-2 flex items-center gap-2">
                 <i className="fa-solid fa-utensils text-amber-500"></i> Acompañante
               </label>
               <div className="flex gap-3">
@@ -228,13 +228,13 @@ export default function ProductModal() {
             )}
             
             {/* REFRESCO FIJO */}
-            <div className="bg-neutral-800 p-3 rounded-lg border border-neutral-700 flex items-center gap-3">
-                <div className="w-8 h-8 rounded-full bg-amber-500/20 flex items-center justify-center text-amber-500">
+            <div className="bg-white p-3 rounded-lg border border-stone-200 shadow-sm flex items-center gap-3">
+                <div className="w-8 h-8 rounded-full bg-amber-100 flex items-center justify-center text-amber-600">
                     <i className="fa-solid fa-bottle-water"></i>
                 </div>
                 <div>
-                    <p className="text-gray-300 text-sm font-bold">Incluye: Refresco Jarrito</p>
-                    <p className="text-gray-500 text-xs">Sabor incluido en el paquete</p>
+                    <p className="text-stone-800 text-sm font-bold">Incluye: Refresco Jarrito</p>
+                    <p className="text-stone-500 text-xs">Sabor incluido en el paquete</p>
                 </div>
             </div>
           </div>
@@ -245,7 +245,7 @@ export default function ProductModal() {
     if (product.id === 'paquete-3') {
         return (
           <div className="space-y-4">
-            <p className="text-xs text-amber-500 font-bold uppercase mb-2">Selecciona tus 3 pizzas grandes:</p>
+            <p className="text-xs text-amber-600 font-bold uppercase mb-2">Selecciona tus 3 pizzas grandes:</p>
             <FlavorSelector 
                 slots={3} 
                 labels={["Pizza 1", "Pizza 2", "Pizza 3"]} 
@@ -257,25 +257,24 @@ export default function ProductModal() {
                 currentProductKeyBase="pizza" 
             />
             
-            {/* REFRESCO FIJO */}
-            <div className="bg-neutral-800 p-3 rounded-lg border border-neutral-700 flex items-center gap-3 mt-4">
-                <div className="w-8 h-8 rounded-full bg-amber-500/20 flex items-center justify-center text-amber-500">
+            <div className="bg-white p-3 rounded-lg border border-stone-200 shadow-sm flex items-center gap-3 mt-4">
+                <div className="w-8 h-8 rounded-full bg-amber-100 flex items-center justify-center text-amber-600">
                     <i className="fa-solid fa-bottle-water"></i>
                 </div>
                 <div>
-                    <p className="text-gray-300 text-sm font-bold">Incluye: Refresco Jarrito</p>
-                    <p className="text-gray-500 text-xs">Sabor incluido en el paquete</p>
+                    <p className="text-stone-800 text-sm font-bold">Incluye: Refresco Jarrito</p>
+                    <p className="text-stone-500 text-xs">Sabor incluido en el paquete</p>
                 </div>
             </div>
           </div>
         );
     }
 
-    // PROMO MAGNO (CORREGIDO: Refresco Fijo)
+    // PROMO MAGNO
     if (product.id === 'promo-magno') {
         return (
             <div className="space-y-4">
-                <p className="text-xs text-amber-500 font-bold uppercase mb-2">Pizza Familiar (Hasta 2 especialidades):</p>
+                <p className="text-xs text-amber-600 font-bold uppercase mb-2">Pizza Familiar (Hasta 2 especialidades):</p>
                 <FlavorSelector 
                     slots={2} 
                     labels={["Mitad 1", "Mitad 2 (Opcional)"]} 
@@ -287,14 +286,13 @@ export default function ProductModal() {
                     currentProductKeyBase="flavor"
                 />
                 
-                {/* REFRESCO FIJO */}
-                <div className="bg-neutral-800 p-3 rounded-lg border border-neutral-700 flex items-center gap-3 mt-4">
-                    <div className="w-8 h-8 rounded-full bg-amber-500/20 flex items-center justify-center text-amber-500">
+                <div className="bg-white p-3 rounded-lg border border-stone-200 shadow-sm flex items-center gap-3 mt-4">
+                    <div className="w-8 h-8 rounded-full bg-amber-100 flex items-center justify-center text-amber-600">
                         <i className="fa-solid fa-bottle-water"></i>
                     </div>
                     <div>
-                        <p className="text-gray-300 text-sm font-bold">Incluye: Refresco Jarrito</p>
-                        <p className="text-gray-500 text-xs">Sabor incluido en el paquete</p>
+                        <p className="text-stone-800 text-sm font-bold">Incluye: Refresco Jarrito</p>
+                        <p className="text-stone-500 text-xs">Sabor incluido en el paquete</p>
                     </div>
                 </div>
             </div>
@@ -305,7 +303,7 @@ export default function ProductModal() {
     if (product.id === 'pizza-rectangular') {
         return (
             <div className="space-y-4">
-                <p className="text-xs text-amber-500 font-bold uppercase mb-2">Elige las 4 esquinas:</p>
+                <p className="text-xs text-amber-600 font-bold uppercase mb-2">Elige las 4 esquinas:</p>
                 <FlavorSelector 
                     slots={4} 
                     labels={["Esp. 1", "Esp. 2", "Esp. 3", "Esp. 4"]} 
@@ -325,7 +323,7 @@ export default function ProductModal() {
     if (product.id === 'pizza-barra') {
         return (
             <div className="space-y-4">
-                <p className="text-xs text-amber-500 font-bold uppercase mb-2">Elige las 2 mitades:</p>
+                <p className="text-xs text-amber-600 font-bold uppercase mb-2">Elige las 2 mitades:</p>
                 <FlavorSelector 
                     slots={2} 
                     labels={["Mitad Izquierda", "Mitad Derecha"]} 
@@ -380,7 +378,7 @@ export default function ProductModal() {
         return (
             <div className="space-y-6">
                 <div>
-                    <label className="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-3 flex items-center gap-2">
+                    <label className="block text-xs font-bold text-stone-500 uppercase tracking-wider mb-3 flex items-center gap-2">
                         <i className="fa-solid fa-ruler-combined text-amber-500"></i> Selecciona el Tamaño
                     </label>
                     <div className="grid grid-cols-2 gap-3">
@@ -391,12 +389,12 @@ export default function ProductModal() {
                                 className={`
                                     p-4 rounded-xl border text-left transition-all relative overflow-hidden group
                                     ${activeSize === size 
-                                        ? 'border-amber-500 bg-amber-500/20 text-white shadow-[0_0_15px_rgba(245,158,11,0.2)]' 
-                                        : 'border-white/10 bg-neutral-800 text-gray-400 hover:border-amber-500/50 hover:bg-neutral-750'}
+                                        ? 'border-amber-500 bg-amber-50 shadow-md' 
+                                        : 'border-stone-200 bg-white text-stone-500 hover:border-amber-300 hover:bg-stone-50'}
                                 `}
                             >
                                 <span className="block font-bold text-xs uppercase tracking-wider mb-1 opacity-70">{size}</span>
-                                <span className={`block text-xl font-serif italic ${activeSize === size ? 'text-amber-500' : 'text-white'}`}>
+                                <span className={`block text-xl font-serif italic ${activeSize === size ? 'text-amber-600' : 'text-stone-800'}`}>
                                     ${price}
                                 </span>
                             </button>
@@ -407,46 +405,50 @@ export default function ProductModal() {
         );
     }
 
-    return <div className="py-2 text-center text-gray-400">Producto simple. ¿Agregar al carrito?</div>;
+    return <div className="py-2 text-center text-stone-400">Producto simple. ¿Agregar al carrito?</div>;
   };
 
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
       
-      {/* Fondo semi-transparente */}
-      <div className="absolute inset-0 bg-black/50 backdrop-blur-sm transition-opacity duration-300" onClick={closeProductModal}></div>
+      {/* Fondo semi-transparente (Mantenemos oscuro para resaltar el modal) */}
+      <div className="absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity duration-300" onClick={closeProductModal}></div>
       
-      <div className="relative bg-neutral-900 border border-white/10 rounded-3xl w-full max-w-lg p-0 shadow-2xl overflow-hidden animate-fade-in-up flex flex-col max-h-[90vh]">
+      {/* MODAL CLARO: bg-[#FFFBF2] */}
+      <div className="relative bg-[#FFFBF2] border border-orange-100 rounded-3xl w-full max-w-lg p-0 shadow-2xl overflow-hidden animate-fade-in-up flex flex-col max-h-[90vh]">
         
-        <div className="bg-gradient-to-r from-neutral-800 to-neutral-900 p-6 border-b border-white/5 flex justify-between items-start shrink-0">
+        {/* HEADER: Blanco puro */}
+        <div className="bg-white p-6 border-b border-orange-100 flex justify-between items-start shrink-0">
             <div>
-                <h3 className="text-2xl font-serif italic font-bold text-white mb-1">{product.name}</h3>
+                <h3 className="text-2xl font-serif italic font-bold text-stone-800 mb-1">{product.name}</h3>
                 <div className="flex items-center gap-2">
-                    <span className="px-2 py-0.5 rounded bg-amber-500/20 border border-amber-500/30 text-amber-500 text-xs font-bold uppercase tracking-wider">
+                    <span className="px-2 py-0.5 rounded bg-amber-100 border border-amber-200 text-amber-600 text-xs font-bold uppercase tracking-wider">
                         {product.category || "Selección"}
                     </span>
-                    <p className="text-white font-bold text-xl">${currentPrice}</p>
+                    <p className="text-stone-800 font-bold text-xl">${currentPrice}</p>
                 </div>
             </div>
-            {/* BOTÓN DE CERRAR MEJORADO (X) */}
-            <button onClick={closeProductModal} className="w-10 h-10 rounded-full bg-white/5 hover:bg-white/10 flex items-center justify-center text-gray-400 hover:text-white transition-colors border border-white/5 hover:border-white/20">
+            {/* BOTÓN DE CERRAR (X) */}
+            <button onClick={closeProductModal} className="w-10 h-10 rounded-full bg-stone-100 hover:bg-stone-200 flex items-center justify-center text-stone-400 hover:text-stone-600 transition-colors border border-stone-200">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-6 h-6">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
                 </svg>
             </button>
         </div>
 
-        <div className="p-6 overflow-y-auto custom-scrollbar flex-grow">
+        {/* CONTENIDO: Fondo Crema */}
+        <div className="p-6 overflow-y-auto custom-scrollbar flex-grow bg-[#FFFBF2]">
             {renderForm()}
         </div>
 
-        <div className="p-4 bg-neutral-900 border-t border-white/5 flex gap-3 shrink-0">
-            <button onClick={closeProductModal} className="flex-1 py-3.5 rounded-xl border border-white/10 text-gray-300 font-medium hover:bg-white/5 transition active:scale-95">
+        {/* FOOTER: Blanco Puro */}
+        <div className="p-4 bg-white border-t border-orange-100 flex gap-3 shrink-0 shadow-[0_-5px_15px_rgba(0,0,0,0.02)]">
+            <button onClick={closeProductModal} className="flex-1 py-3.5 rounded-xl border border-stone-200 text-stone-500 font-medium hover:bg-stone-50 hover:text-stone-800 transition active:scale-95">
                 Cancelar
             </button>
             <button 
                 onClick={handleSubmit}
-                className="flex-[2] py-3.5 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 text-black font-bold hover:from-amber-400 hover:to-amber-500 transition shadow-[0_0_20px_rgba(245,158,11,0.3)] flex items-center justify-center gap-2 active:scale-95"
+                className="flex-[2] py-3.5 rounded-xl bg-[#25D366] hover:bg-[#20bd5a] text-white font-bold transition shadow-lg shadow-green-500/30 flex items-center justify-center gap-2 active:scale-95"
             >
                 <i className="fa-solid fa-check"></i>
                 Agregar

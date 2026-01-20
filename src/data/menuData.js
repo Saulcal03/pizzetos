@@ -1,6 +1,6 @@
-// src/data/menuData.js - Base de datos de productos
+// src/data/menuData.js - Base de datos de productos actualizados según imagen
 export const menuItems = [
-  // --- 1. PIZZAS REGULARES (Precios Estandarizados) ---
+  // --- 1. PIZZAS REGULARES (Precios Estandarizados: $180, $255, $315, $375) ---
   {
     id: "hawaiana",
     name: "Hawaiana",
@@ -24,7 +24,7 @@ export const menuItems = [
     name: "Combinada Especial",
     description: "Champiñón, Cebolla, Pimiento V., Salami, Jamón y Chorizo",
     category: "Pizzas",
-    image: "/img/combinadaespecial.webp", // CORREGIDO: En tu log salía 'combinada.webp'
+    image: "/img/combinadaespecial.webp",
     prices: { "Chica": 180, "Mediana": 255, "Grande": 315, "Familiar": 375 },
     type: "personalizable"
   },
@@ -33,16 +33,16 @@ export const menuItems = [
     name: "Pizzeto Especial",
     description: "Champiñón, Cebolla, Pimiento V., Salami, Peperoni y Chorizo",
     category: "Pizzas",
-    image: "/img/pizzetaespecial.webp", // CORREGIDO: En tu log salía 'pizzeto.webp'
+    image: "/img/pizzetaespecial.webp",
     prices: { "Chica": 180, "Mediana": 255, "Grande": 315, "Familiar": 375 },
     type: "personalizable"
   },
   {
     id: "atun-especial",
     name: "Atún Especial",
-    description: "Atún, Champiñón, Aguacate y Rajas de Habanero",
+    description: "Atún, Champiñón y Aguacate", // Ajustado descripción según imagen
     category: "Pizzas",
-    image: "/img/atun especial.webp", // CORREGIDO
+    image: "/img/atun especial.webp",
     prices: { "Chica": 180, "Mediana": 255, "Grande": 315, "Familiar": 375 },
     type: "personalizable"
   },
@@ -150,7 +150,7 @@ export const menuItems = [
     name: "Costilla BBQ",
     description: "Costilla Ahumada, Salsa BBQ o Mango Habanero",
     category: "Pizzas",
-    image: "/img/costilla.webp", // CORREGIDO: Usamos la misma de snacks si no tienes otra específica
+    image: "/img/costilla.webp",
     prices: { "Chica": 180, "Mediana": 255, "Grande": 315, "Familiar": 375 },
     type: "personalizable"
   },
@@ -182,14 +182,15 @@ export const menuItems = [
     type: "personalizable"
   },
 
-  // --- 2. ESPECIALIDADES DEL MAR (Precios Específicos) ---
+  // --- 2. ESPECIALIDADES DEL MAR (Precios CORREGIDOS según imagen) ---
   {
     id: "camaron",
     name: "Camarón",
-    description: "Camarón",
+    description: "Camarón y queso",
     category: "Especialidades del Mar",
     image: "/img/camaron..webp",
-    prices: { "Chica": 200, "Mediana": 280, "Grande": 380, "Familiar": 480 },
+    // CORRECCIÓN: Antes 200/280/380/480 -> Ahora 230/310/410/510
+    prices: { "Chica": 230, "Mediana": 310, "Grande": 410, "Familiar": 510 },
     type: "personalizable"
   },
   {
@@ -197,8 +198,9 @@ export const menuItems = [
     name: "Pizza Del Mar",
     description: "Camarón, mejillón, pulpo, atún, aceitunas y cebolla",
     category: "Especialidades del Mar",
-    image: "/img/del mar..webp", // CORREGIDO
-    prices: { "Chica": 250, "Mediana": 320, "Grande": 450, "Familiar": 540 },
+    image: "/img/del mar..webp",
+    // CORRECCIÓN: Antes 250/320/450/540 -> Ahora 275/340/470/560
+    prices: { "Chica": 275, "Mediana": 340, "Grande": 470, "Familiar": 560 },
     type: "personalizable"
   },
 
@@ -254,7 +256,7 @@ export const menuItems = [
     description: "2 especialidades a elegir + 1 Refresco (2Lts)",
     price: 260,
     category: "Paquetes",
-    image: "/img/barra.webp", // Necesitas tener barra.webp, si no usa rectangular.webp temporalmente
+    image: "/img/barra.webp", 
     type: "personalizable"
   },
 
@@ -265,7 +267,7 @@ export const menuItems = [
     description: "Acompañadas de papas y refresco de 355ml",
     price: 80,
     category: "Snacks",
-    image: "/img/hamburguesa%20sencilla.webp", // CORREGIDO
+    image: "/img/hamburguesa%20sencilla.webp",
     type: "personalizable"
   },
   {
@@ -274,7 +276,7 @@ export const menuItems = [
     description: "Acompañadas de papas y refresco de 355ml",
     price: 95,
     category: "Snacks",
-    image: "/img/hamburguesa%20doble.webp", // CORREGIDO
+    image: "/img/hamburguesa%20doble.webp",
     type: "personalizable"
   },
   {
@@ -308,7 +310,8 @@ export const menuItems = [
     id: "spaghetti-jamon",
     name: "Spaguetty Jamón, queso y Tocino",
     description: "Orden para 2 personas",
-    price: 95,
+    // CORRECCIÓN: Antes 95 -> Ahora 120
+    price: 120,
     category: "Snacks",
     image: "/img/spaguetty%20jamon,queso%20y%20tocino.webp",
     type: "fijo"
@@ -317,7 +320,8 @@ export const menuItems = [
     id: "spaghetti-camaron",
     name: "Spaghetti Camarón",
     description: "Orden para 2 personas",
-    price: 180,
+    // CORRECCIÓN: Antes 180 -> Ahora 195
+    price: 195,
     category: "Snacks",
     image: "/img/spaguetty%20camaron.webp",
     type: "fijo"
@@ -353,7 +357,6 @@ export const menuItems = [
     opciones: ["Fanta", "Sprite", "Fresca", "Mundet"]
   }
 ];
-
 
 export const opcionesRefrescos = {
   refrescos_2l: ["Pepsi", "Manzanita", "Sangría", "7UP", "Mirinda"],

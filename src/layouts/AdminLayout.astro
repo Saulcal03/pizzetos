@@ -1,14 +1,8 @@
 ---
-// src/layouts/Layout.astro
+// src/layouts/AdminLayout.astro
 
-// 1. CORREGIMOS LAS RUTAS AQUÍ (Agregamos /Common/)
-import Navbar from '../components/Common/Navbar.astro';
-import Footer from '../components/Common/Footer.astro'; 
-
-import CartFlyout from '../components/Cart/CartFlyout.jsx';
-import ProductModal from '../components/Menu/ProductModal.jsx'; 
-// --- NUEVO: Importamos el CheckoutModal ---
-import CheckoutModal from '../components/Cart/CheckoutModal.jsx'; 
+// PASO 2: Hemos eliminado los imports de Navbar, Footer y Componentes de Tienda
+// para dejar este layout limpio para la administración.
 
 const { title } = Astro.props;
 ---
@@ -17,33 +11,22 @@ const { title } = Astro.props;
 <html lang="es">
   <head>
     <meta charset="UTF-8" />
-    <meta name="description" content="Pizzetos Pizza - Sabor Artesanal" />
     <meta name="viewport" content="width=device-width" />
-    <link rel="icon" type="image/png" href="/favicon.png" />
-    <title>{title}</title>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <title>{title} | Panel Admin</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
   </head>
   
   <body class="bg-neutral-950 text-white font-body">
     
-    <Navbar />
-    
     <slot />
-
-    <Footer />
-
-    <CartFlyout client:load />
-    <ProductModal client:load />
-    
-    {/* --- NUEVO: Aquí va el Modal de Checkout para que funcione en toda la web --- */}
-    <CheckoutModal client:load />
 
   </body>
 </html>
 
 <style is:global>
-  /* Tus estilos globales básicos */
+  /* Tus estilos globales básicos se mantienen */
   :root {
     --font-heading: 'Playfair Display', serif;
     --font-body: 'Lato', sans-serif;
@@ -69,7 +52,7 @@ const { title } = Astro.props;
     animation: fadeInUp 0.4s ease-out forwards;
   }
   
-  /* Scrollbar personalizada para el modal */
+  /* Scrollbar personalizada */
   .custom-scrollbar::-webkit-scrollbar {
     width: 6px;
   }

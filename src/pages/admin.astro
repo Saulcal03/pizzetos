@@ -1,0 +1,9 @@
+---
+// CAMBIO: Importamos AdminLayout en lugar de Layout normal
+import AdminLayout from '../layouts/AdminLayout.astro'; 
+import AdminPanel from '../components/Admin/AdminPanel.jsx';
+---
+
+<AdminLayout title="Admin Pizzetos">
+  <AdminPanel client:only="react" />
+</AdminLayout>
