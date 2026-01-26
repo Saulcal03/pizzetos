@@ -4,6 +4,7 @@ import { selectedGlobalSize } from '../../stores/cartStore';
 export default function SizeSelector() {
   const currentSize = useStore(selectedGlobalSize);
 
+  // --- DEFINICIÓN DE LOS SVG (Sin cambios aquí, solo se mueven abajo) ---
   const sizes = [
     { 
       id: 'Chica', 
@@ -88,19 +89,20 @@ export default function SizeSelector() {
       )
     }
   ];
+  // ---------------------------------------------------------
 
   return (
     <div className="w-full max-w-7xl mx-auto px-4 py-10">
         
-        {/* Encabezado Premium */}
+        {/* Encabezado Premium (Ligeramente más intenso) */}
         <div className="text-center mb-16 relative font-serif -mt-12 md:-mt-20 z-20">
-            <h2 className="text-4xl md:text-6xl leading-tight text-transparent bg-clip-text bg-gradient-to-b from-amber-600 to-amber-900 italic pb-2 mb-8 drop-shadow-md">
+            <h2 className="text-4xl md:text-6xl leading-tight text-transparent bg-clip-text bg-gradient-to-b from-amber-700 to-amber-950 italic pb-2 mb-8 drop-shadow-md">
                 Elige tu Hambre
             </h2>
             
-            <div className="h-1 w-48 bg-gradient-to-r from-transparent via-amber-500 to-transparent mx-auto mb-6 opacity-70"></div>
+            <div className="h-1 w-48 bg-gradient-to-r from-transparent via-amber-600 to-transparent mx-auto mb-6 opacity-80"></div>
             
-            <p className="text-amber-800/70 text-sm md:text-base font-bold tracking-[0.3em] uppercase drop-shadow-sm">
+            <p className="text-amber-900/80 text-sm md:text-base font-bold tracking-[0.3em] uppercase drop-shadow-sm">
                 Selecciona la experiencia ideal
             </p>
         </div>
@@ -115,45 +117,48 @@ export default function SizeSelector() {
                         key={size.id}
                         onClick={() => selectedGlobalSize.set(size.id)}
                         className={`
-                            group relative rounded-[2.5rem] border transition-all duration-500 cubic-bezier(0.4, 0, 0.2, 1)
+                            group relative rounded-[2.5rem] border-2 transition-all duration-500 cubic-bezier(0.4, 0, 0.2, 1)
                             flex flex-col items-center justify-between py-10 px-4 min-h-[280px]
                             ${isSelected 
-                                ? 'bg-white border-amber-500 shadow-[0_25px_50px_-15px_rgba(120,60,0,0.2)] -translate-y-4 scale-[1.03] z-10' 
-                                : 'bg-amber-50 border-amber-100 hover:border-amber-400 hover:bg-white hover:-translate-y-2'
+                                /* SELECCIONADO: Fondo blanco puro para contraste máximo, borde dorado intenso, sombra dorada fuerte */
+                                ? 'bg-white border-amber-600 shadow-[0_25px_50px_-12px_rgba(217,119,6,0.5)] -translate-y-4 scale-[1.03] z-10' 
+                                /* NO SELECCIONADO: Fondo crema rico, borde dorado suave. Hover: se vuelve más dorado */
+                                : 'bg-[#FFF8E7] border-amber-200/80 hover:border-amber-500 hover:bg-amber-50 hover:-translate-y-2'
                             }
                         `}
                     >
-                        {/* Brillo suave interno en la tarjeta */}
-                        <div className={`absolute inset-0 rounded-[2.5rem] transition-opacity duration-700 ${isSelected ? 'opacity-100' : 'opacity-0'} bg-[radial-gradient(circle_at_50%_0%,rgba(245,158,11,0.08),transparent_70%)]`}></div>
+                        {/* Brillo suave interno (Más cálido y fuerte) */}
+                        <div className={`absolute inset-0 rounded-[2.5rem] transition-opacity duration-700 ${isSelected ? 'opacity-100' : 'opacity-0'} bg-[radial-gradient(circle_at_50%_0%,rgba(251,191,36,0.3),transparent_70%)]`}></div>
 
-                        {/* Icono SVG */}
+                        {/* Icono SVG (Colores más profundos) */}
                         <div className="relative mt-2">
-                            <div className={`relative transform transition-all duration-500 ${isSelected ? 'text-amber-600 scale-110 drop-shadow-md' : 'text-stone-400 group-hover:text-amber-500'}`}>
+                            <div className={`relative transform transition-all duration-500 ${isSelected ? 'text-amber-600 scale-110 drop-shadow-[0_2px_4px_rgba(217,119,6,0.3)]' : 'text-amber-900/30 group-hover:text-amber-600'}`}>
                                 {size.path}
                             </div>
                         </div>
 
-                        {/* Textos */}
+                        {/* Textos (Tonos café/dorado oscuro para contraste) */}
                         <div className="flex flex-col items-center mt-6 z-10 relative">
-                            <h3 className={`font-serif text-3xl italic font-bold transition-all duration-300 drop-shadow-sm ${isSelected ? 'text-stone-900 scale-105' : 'text-stone-700 group-hover:text-stone-900'}`}>
+                            <h3 className={`font-serif text-3xl italic font-bold transition-all duration-300 drop-shadow-sm ${isSelected ? 'text-amber-950 scale-105' : 'text-amber-900/60 group-hover:text-amber-950'}`}>
                                 {size.label}
                             </h3>
-                            <div className={`h-px w-12 my-2 transition-all duration-500 ${isSelected ? 'bg-amber-500 w-16' : 'bg-amber-200 group-hover:bg-amber-400'}`}></div>
-                            <p className={`text-xs md:text-sm font-bold uppercase tracking-widest ${isSelected ? 'text-amber-600' : 'text-stone-400 group-hover:text-amber-500'}`}>
+                            {/* Línea divisora más fuerte */}
+                            <div className={`h-px w-12 my-2 transition-all duration-500 ${isSelected ? 'bg-amber-600 w-16' : 'bg-amber-300 group-hover:bg-amber-500'}`}></div>
+                            <p className={`text-xs md:text-sm font-bold uppercase tracking-widest ${isSelected ? 'text-amber-700' : 'text-amber-900/40 group-hover:text-amber-700'}`}>
                                 {size.sub}
                             </p>
                         </div>
 
-                        {/* Botón de Precio */}
+                        {/* Botón de Precio (Más sólido y llamativo) */}
                         <div className={`
-                            mt-6 px-8 py-2 rounded-full text-sm md:text-base font-bold border transition-all duration-300 relative overflow-hidden group/btn
+                            mt-6 px-8 py-2 rounded-full text-sm md:text-base font-bold border-2 transition-all duration-300 relative overflow-hidden group/btn
                             ${isSelected 
-                                ? 'bg-amber-500 text-white border-amber-400 shadow-lg' 
-                                : 'bg-white text-stone-600 border-amber-100 group-hover:bg-amber-50 group-hover:text-amber-600 group-hover:border-amber-300'
+                                ? 'bg-amber-600 text-white border-amber-600 shadow-lg shadow-amber-600/30' 
+                                : 'bg-white/60 text-amber-800 border-amber-300 group-hover:bg-amber-500 group-hover:text-white group-hover:border-amber-500'
                             }
                         `}>
                             <span className="relative z-10">{size.price}</span>
-                            <div className="absolute inset-0 h-full w-full scale-0 rounded-full bg-white/20 transition-all duration-300 group-hover/btn:scale-150 group-hover/btn:opacity-100 opacity-0"></div>
+                            <div className="absolute inset-0 h-full w-full scale-0 rounded-full bg-white/30 transition-all duration-300 group-hover/btn:scale-150 group-hover/btn:opacity-100 opacity-0"></div>
                         </div>
 
                     </button>
