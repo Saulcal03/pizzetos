@@ -73,7 +73,7 @@ export default function CartFlyout() {
           ) : (
             items.map((item) => {
               
-              // --- CASO 1: PROMOCIÓN 2x1 ---
+              // --- CASO 1: PROMOCIÓN 2x1 (Mantiene orilla porque son Pizzas individuales) ---
               if (item.type === 'promo_pair') {
                 return (
                   <div key={item.uniqueId} className="bg-white rounded-xl border border-orange-200 shadow-sm relative overflow-hidden">
@@ -91,40 +91,23 @@ export default function CartFlyout() {
                                     <div className="flex items-center gap-2">
                                         <span className="bg-orange-100 text-orange-600 text-[11px] font-bold px-2 py-0.5 rounded-full">{index + 1}</span>
                                         <h4 className="font-bold text-gray-800 text-sm">{pizza.name}</h4>
-                                        {index === 1 && (
-                                          <span className="text-[10px] bg-green-100 text-green-700 px-2 py-0.5 rounded-full font-bold uppercase tracking-tighter">
-                                            ¡De Regalo!
-                                          </span>
-                                        )}
                                     </div>
-                                    <button 
-                                      onClick={() => removeCartItem(pizza.uniqueId)}
-                                      className="p-2 text-red-500 hover:bg-red-50 rounded-full transition-all group/trash"
-                                    >
+                                    <button onClick={() => removeCartItem(pizza.uniqueId)} className="p-2 text-red-500 hover:bg-red-50 rounded-full transition-all">
                                       <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                                       </svg>
                                     </button>
                                 </div>
-                                
-                                {pizza.customDescription && (
-                                    <p className="text-xs text-gray-500 mt-1 ml-8">{pizza.customDescription}</p>
-                                )}
+                                {pizza.customDescription && <p className="text-xs text-gray-500 mt-1 ml-8">{pizza.customDescription}</p>}
 
+                                {/* Orilla en 2x1 se queda porque son pizzas solas */}
                                 {PRECIOS_ORILLA[item.size] && (
                                     <div className="mt-2 ml-8">
                                         <label className="flex items-center space-x-2 cursor-pointer select-none group">
-                                        <input 
-                                            type="checkbox" 
-                                            checked={pizza.orillaQueso || false}
-                                            onChange={() => handleToggleOrilla(pizza.uniqueId, pizza.orillaQueso)}
-                                            className="w-4 h-4 text-orange-500 rounded focus:ring-orange-500 border-gray-300"
-                                        />
+                                        <input type="checkbox" checked={pizza.orillaQueso || false} onChange={() => handleToggleOrilla(pizza.uniqueId, pizza.orillaQueso)} className="w-4 h-4 text-orange-500 rounded focus:ring-orange-500 border-gray-300" />
                                         <div className="flex items-center gap-2 text-xs">
-                                            <span className="text-gray-600 group-hover:text-orange-600 transition-colors">Orilla de Queso</span>
-                                            <span className="text-orange-600 font-bold">
-                                            +${PRECIOS_ORILLA[item.size]}
-                                            </span>
+                                            <span className="text-gray-600">Orilla de Queso</span>
+                                            <span className="text-orange-600 font-bold">+${PRECIOS_ORILLA[item.size]}</span>
                                         </div>
                                         </label>
                                     </div>
@@ -134,10 +117,7 @@ export default function CartFlyout() {
                     </div>
                     
                     <div className="bg-gray-50 p-2 text-right border-t border-gray-100">
-                         <button 
-                            onClick={() => handleRemovePair(item.items)}
-                            className="text-red-400 hover:text-red-600 text-[10px] font-bold uppercase flex items-center justify-end gap-1 ml-auto transition-colors px-2"
-                          >
+                         <button onClick={() => handleRemovePair(item.items)} className="text-red-400 hover:text-red-600 text-[10px] font-bold uppercase px-2">
                             Eliminar Combo Completo
                           </button>
                     </div>
@@ -145,10 +125,14 @@ export default function CartFlyout() {
                 );
               }
 
-              // --- CASO 2: PRODUCTO INDIVIDUAL (Paquetes, Papas, Pizzas solas) ---
+              // --- CASO 2: PRODUCTO INDIVIDUAL / PAQUETES ---
               const costoOrilla = PRECIOS_ORILLA[item.size] || 0;
               const precioFinal = item.orillaQueso ? (item.price + costoOrilla) : item.price;
               const isPromoItem = item.id === 'jarritos-2lts-promo';
+              
+              // LÓGICA: ¿Es una pizza individual? 
+              // Mostramos orilla SOLO si es categoría Pizzas y NO es un ID de paquete
+              const showOrillaOption = item.category === 'Pizzas' && !item.id.includes('paquete') && !item.id.includes('promo');
 
               return (
                 <div key={item.uniqueId} className={`rounded-xl p-4 border shadow-sm relative group ${isPromoItem ? 'bg-orange-50 border-orange-300' : 'bg-white border-orange-100'}`}>
@@ -157,55 +141,45 @@ export default function CartFlyout() {
                       <div className="flex-1">
                         <h4 className="font-bold text-gray-800 text-lg leading-tight">
                             {item.name} 
-                            {isPromoItem && <span className="ml-2 text-[10px] bg-orange-500 text-white px-2 py-0.5 rounded-full uppercase tracking-wider">Oferta</span>}
+                            {isPromoItem && <span className="ml-2 text-[10px] bg-orange-500 text-white px-2 py-0.5 rounded-full uppercase">Oferta</span>}
                         </h4>
                         
-                        {/* AJUSTE: Solo muestra la etiqueta de tamaño si NO es "General" */}
                         {item.size && item.size !== "General" && (
-                          <span className="inline-block mt-1 bg-orange-100 text-orange-800 text-xs px-2 py-0.5 rounded-full font-semibold border border-orange-200">
-                            Tamaño: {item.size}
+                          <span className="inline-block mt-1 bg-amber-100 text-amber-800 text-[10px] px-2 py-0.5 rounded-full font-bold border border-amber-200 uppercase">
+                            {item.size}
                           </span>
                         )}
 
-                        {/* DESCRIPCIÓN: Aquí es donde aparecerá el texto de "Paquete 1", etc. */}
                         {item.customDescription && (
-                          <p className="text-xs text-gray-500 mt-1 italic line-clamp-2">
+                          <p className="text-[11px] text-stone-500 mt-2 bg-stone-50 p-2 rounded-lg border border-stone-100 italic">
                             {item.customDescription}
                           </p>
                         )}
-                        
-                        {item.isDiscounted && <span className="text-green-600 text-xs font-bold block mt-1">Descuento aplicado</span>}
                       </div>
                       <div className="text-right ml-4">
-                        <span className="font-serif italic text-xl text-amber-600 font-medium">
-                          ${precioFinal}
-                        </span>
+                        <span className="font-serif italic text-xl text-amber-600 font-medium">${precioFinal}</span>
                       </div>
                     </div>
 
-                    {PRECIOS_ORILLA[item.size] && (
+                    {/* SOLO SE MUESTRA SI ES PIZZA INDIVIDUAL (No paquetes) */}
+                    {showOrillaOption && PRECIOS_ORILLA[item.size] && (
                       <div className="mt-3 pt-2 border-t border-dashed border-gray-100">
                         <label className="flex items-center space-x-2 cursor-pointer select-none">
                           <input 
                             type="checkbox" 
-                            checked={item.orillaQueso || false}
-                            onChange={() => handleToggleOrilla(item.uniqueId, item.orillaQueso)}
-                            className="w-4 h-4 text-orange-500 rounded focus:ring-orange-500 border-gray-300"
+                            checked={item.orillaQueso || false} 
+                            onChange={() => handleToggleOrilla(item.uniqueId, item.orillaQueso)} 
+                            className="w-4 h-4 text-orange-500 rounded focus:ring-orange-500 border-gray-300" 
                           />
                           <div className="flex justify-between w-full text-sm">
                             <span className="text-gray-700 font-medium">Con Orilla de Queso</span>
-                            <span className="text-orange-600 font-bold">
-                              +${PRECIOS_ORILLA[item.size]}
-                            </span>
+                            <span className="text-orange-600 font-bold">+${PRECIOS_ORILLA[item.size]}</span>
                           </div>
                         </label>
                       </div>
                     )}
 
-                    <button 
-                      onClick={() => removeCartItem(item.uniqueId)}
-                      className="self-end mt-2 text-red-500 font-bold hover:underline text-xs transition-colors flex items-center gap-1"
-                    >
+                    <button onClick={() => removeCartItem(item.uniqueId)} className="self-end mt-2 text-red-500 font-bold hover:underline text-xs">
                       Eliminar
                     </button>
                   </div>
@@ -215,27 +189,6 @@ export default function CartFlyout() {
           )}
         </div>
 
-        {/* BANNER DE PROMOCIÓN JARRITOS */}
-        {showJarritoPromo && (
-            <div className="px-5 pb-2">
-                <div className="bg-gradient-to-r from-orange-400 to-amber-500 rounded-xl p-3 shadow-lg flex items-center justify-between text-white relative overflow-hidden group cursor-pointer" onClick={handleAddJarrito}>
-                    <div className="absolute top-0 left-0 w-full h-full bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                    <div className="flex flex-col relative z-10">
-                        <span className="font-bold text-sm uppercase tracking-wider text-yellow-100">¡Promoción Especial!</span>
-                        <span className="font-medium text-xs">Añade un Jarritos 2L por solo</span>
-                    </div>
-                    <div className="flex items-center gap-3 relative z-10">
-                        <span className="font-serif italic text-2xl font-bold text-white drop-shadow-md">$25</span>
-                        <button className="bg-white text-orange-600 rounded-full p-1 shadow-md hover:scale-110 transition-transform">
-                            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                                <path fillRule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clipRule="evenodd" />
-                            </svg>
-                        </button>
-                    </div>
-                </div>
-            </div>
-        )}
-
         {/* FOOTER */}
         <div className="p-6 bg-white border-t border-orange-100 pb-24 md:pb-6">
           <div className="flex justify-between items-end mb-4">
@@ -243,11 +196,7 @@ export default function CartFlyout() {
             <span className="font-serif italic text-4xl text-amber-600 font-medium">${total}</span>
           </div>
           
-          <button 
-            onClick={handleCheckout}
-            disabled={items.length === 0}
-            className={`w-full py-4 rounded-xl font-bold text-white shadow-lg flex items-center justify-center gap-2 transition-all ${items.length === 0 ? 'bg-gray-300 cursor-not-allowed' : 'bg-[#25D366] hover:bg-[#20bd5a]'}`}
-          >
+          <button onClick={handleCheckout} disabled={items.length === 0} className={`w-full py-4 rounded-xl font-bold text-white shadow-lg flex items-center justify-center gap-2 transition-all ${items.length === 0 ? 'bg-gray-300 cursor-not-allowed' : 'bg-[#25D366] hover:bg-[#20bd5a]'}`}>
              <span>Continuar con el Pedido</span>
           </button>
         </div>

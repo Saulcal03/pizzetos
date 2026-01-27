@@ -4,7 +4,7 @@ import { isModalOpen, modalProduct, closeProductModal, addCartItem, selectedGlob
 import { menuItems, opcionesRefrescos } from '../../data/menuData'; 
 import { useState, useEffect, useMemo } from 'react';
 
-// --- COMPONENTES VISUALES EXTERNOS (TEMA CLARO PREMIUM) ---
+// --- COMPONENTES VISUALES EXTERNOS ---
 
 const OptionPills = ({ title, options, selected, onSelect, icon }) => {
   if (!options || options.length === 0) return null;
@@ -53,11 +53,9 @@ const SelectionCard = ({ label, value, selected, onSelect, iconClass }) => (
     </button>
 );
 
-// --- COMPONENTE CORREGIDO PARA IOS ---
 const FlavorSelector = ({ slots, labels, selections, setSelections, activeFlavorSlot, setActiveFlavorSlot, pizzaOptions, currentProductKeyBase }) => {
     return (
       <div className="space-y-4">
-        {/* Visualización de Slots */}
         <div className="grid grid-cols-2 gap-2 mb-2">
            {Array.from({ length: slots }).map((_, idx) => {
              const slotNum = idx + 1;
@@ -96,14 +94,12 @@ const FlavorSelector = ({ slots, labels, selections, setSelections, activeFlavor
            })}
         </div>
 
-        {/* Grilla de Opciones - CORRECCIÓN IOS */}
         <div>
            <label className="block text-xs font-bold text-stone-500 uppercase tracking-wider mb-2">
              <i className="fa-solid fa-pizza-slice text-amber-500 mr-2"></i>
              Elige sabor para: <span className="text-stone-800 font-black">Opción {activeFlavorSlot}</span>
            </label>
            
-           {/* Cambiado a 2 columnas en móvil y 4 en desktop para evitar amontonamiento */}
            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 max-h-[250px] overflow-y-auto custom-scrollbar pr-1">
              {pizzaOptions.map(pizza => {
                let currentSlotKey;
@@ -124,7 +120,6 @@ const FlavorSelector = ({ slots, labels, selections, setSelections, activeFlavor
                      ${isSelected ? 'border-amber-500 ring-2 ring-amber-500/50' : 'border-stone-200 opacity-90 hover:opacity-100 hover:border-amber-300'}
                    `}
                  >
-                   {/* Contenedor con Aspect Ratio Box para Safari */}
                    <div className="aspect-square w-full relative">
                       <img 
                         src={pizza.image} 
@@ -187,13 +182,23 @@ export default function ProductModal() {
       currentPrice = product.prices[activeSize];
   }
 
+  // --- LÓGICA DE ENVÍO ACTUALIZADA ---
   const handleSubmit = () => {
+    let displaySize = activeSize;
+
+    // Asignación de nombres descriptivos para paquetes
+    if (product.id === 'paquete-2') displaySize = "Grande";
+    if (product.id === 'paquete-3') displaySize = "Grande";
+    if (product.id === 'promo-magno') displaySize = "Familiar";
+    if (product.id === 'pizza-rectangular') displaySize = "Familiar";
+    if (product.id === 'pizza-barra') displaySize = "Barra";
+
     const finalItem = {
       ...product,
       price: currentPrice,
       priceFull: currentPrice,
-      size: activeSize,
-      selections: { ...selections, size: activeSize },
+      size: displaySize, 
+      selections: { ...selections, size: displaySize },
       customDescription: Object.values(selections).filter(Boolean).join(', ')
     };
     addCartItem(finalItem);
@@ -204,21 +209,11 @@ export default function ProductModal() {
   const refrescos355Options = opcionesRefrescos?.refrescos_355ml || ["Fanta", "Sprite", "Fresca", "Mundet"];
 
   const renderForm = () => {
-    
+    // Los bloques if (product.id === ...) se mantienen iguales para el renderizado
     if (product.id === 'paquete-2') {
         return (
           <div className="space-y-6">
-            <FlavorSelector 
-                slots={1} 
-                labels={["Tu Pizza Grande"]} 
-                selections={selections} 
-                setSelections={setSelections}
-                activeFlavorSlot={activeFlavorSlot}
-                setActiveFlavorSlot={setActiveFlavorSlot}
-                pizzaOptions={pizzaOptions}
-                currentProductKeyBase="pizza" 
-            />
-            
+            <FlavorSelector slots={1} labels={["Tu Pizza Grande"]} selections={selections} setSelections={setSelections} activeFlavorSlot={activeFlavorSlot} setActiveFlavorSlot={setActiveFlavorSlot} pizzaOptions={pizzaOptions} currentProductKeyBase="pizza" />
             <div>
               <label className="block text-xs font-bold text-stone-500 uppercase tracking-wider mb-2 flex items-center gap-2">
                 <i className="fa-solid fa-utensils text-amber-500"></i> Acompañante
@@ -228,11 +223,9 @@ export default function ProductModal() {
                  <SelectionCard label="Hamburguesa" value="Hamburguesa" selected={selections.side} onSelect={(val) => setSelections({...selections, side: val})} iconClass="fa-burger" />
               </div>
             </div>
-
             {selections.side === 'Alitas' && (
                 <OptionPills title="Salsa Alitas" icon="fa-pepper-hot" options={["BBQ", "Mango Habanero"]} selected={selections.sideFlavor} onSelect={(val) => setSelections({...selections, sideFlavor: val})} />
             )}
-            
             <div className="bg-white p-3 rounded-lg border border-stone-200 shadow-sm flex items-center gap-3">
                 <div className="w-8 h-8 rounded-full bg-amber-100 flex items-center justify-center text-amber-600">
                     <i className="fa-solid fa-bottle-water"></i>
@@ -250,17 +243,7 @@ export default function ProductModal() {
         return (
           <div className="space-y-4">
             <p className="text-xs text-amber-600 font-bold uppercase mb-2">Selecciona tus 3 pizzas grandes:</p>
-            <FlavorSelector 
-                slots={3} 
-                labels={["Pizza 1", "Pizza 2", "Pizza 3"]} 
-                selections={selections} 
-                setSelections={setSelections}
-                activeFlavorSlot={activeFlavorSlot}
-                setActiveFlavorSlot={setActiveFlavorSlot}
-                pizzaOptions={pizzaOptions}
-                currentProductKeyBase="pizza" 
-            />
-            
+            <FlavorSelector slots={3} labels={["Pizza 1", "Pizza 2", "Pizza 3"]} selections={selections} setSelections={setSelections} activeFlavorSlot={activeFlavorSlot} setActiveFlavorSlot={setActiveFlavorSlot} pizzaOptions={pizzaOptions} currentProductKeyBase="pizza" />
             <div className="bg-white p-3 rounded-lg border border-stone-200 shadow-sm flex items-center gap-3 mt-4">
                 <div className="w-8 h-8 rounded-full bg-amber-100 flex items-center justify-center text-amber-600">
                     <i className="fa-solid fa-bottle-water"></i>
@@ -278,17 +261,7 @@ export default function ProductModal() {
         return (
             <div className="space-y-4">
                 <p className="text-xs text-amber-600 font-bold uppercase mb-2">Pizza Familiar (Hasta 2 especialidades):</p>
-                <FlavorSelector 
-                    slots={2} 
-                    labels={["Mitad 1", "Mitad 2 (Opcional)"]} 
-                    selections={selections} 
-                    setSelections={setSelections}
-                    activeFlavorSlot={activeFlavorSlot}
-                    setActiveFlavorSlot={setActiveFlavorSlot}
-                    pizzaOptions={pizzaOptions}
-                    currentProductKeyBase="flavor"
-                />
-                
+                <FlavorSelector slots={2} labels={["Mitad 1", "Mitad 2 (Opcional)"]} selections={selections} setSelections={setSelections} activeFlavorSlot={activeFlavorSlot} setActiveFlavorSlot={setActiveFlavorSlot} pizzaOptions={pizzaOptions} currentProductKeyBase="flavor" />
                 <div className="bg-white p-3 rounded-lg border border-stone-200 shadow-sm flex items-center gap-3 mt-4">
                     <div className="w-8 h-8 rounded-full bg-amber-100 flex items-center justify-center text-amber-600">
                         <i className="fa-solid fa-bottle-water"></i>
@@ -306,16 +279,7 @@ export default function ProductModal() {
         return (
             <div className="space-y-4">
                 <p className="text-xs text-amber-600 font-bold uppercase mb-2">Elige las 4 esquinas:</p>
-                <FlavorSelector 
-                    slots={4} 
-                    labels={["Esp. 1", "Esp. 2", "Esp. 3", "Esp. 4"]} 
-                    selections={selections} 
-                    setSelections={setSelections}
-                    activeFlavorSlot={activeFlavorSlot}
-                    setActiveFlavorSlot={setActiveFlavorSlot}
-                    pizzaOptions={pizzaOptions}
-                    currentProductKeyBase="flavor"
-                />
+                <FlavorSelector slots={4} labels={["Esp. 1", "Esp. 2", "Esp. 3", "Esp. 4"]} selections={selections} setSelections={setSelections} activeFlavorSlot={activeFlavorSlot} setActiveFlavorSlot={setActiveFlavorSlot} pizzaOptions={pizzaOptions} currentProductKeyBase="flavor" />
                 <OptionPills title="Refresco 2Lts" icon="fa-bottle-water" options={jarritosOptions} selected={selections.drink} onSelect={(val) => setSelections({...selections, drink: val})} />
             </div>
         );
@@ -325,16 +289,7 @@ export default function ProductModal() {
         return (
             <div className="space-y-4">
                 <p className="text-xs text-amber-600 font-bold uppercase mb-2">Elige las 2 mitades:</p>
-                <FlavorSelector 
-                    slots={2} 
-                    labels={["Mitad Izquierda", "Mitad Derecha"]} 
-                    selections={selections} 
-                    setSelections={setSelections}
-                    activeFlavorSlot={activeFlavorSlot}
-                    setActiveFlavorSlot={setActiveFlavorSlot}
-                    pizzaOptions={pizzaOptions}
-                    currentProductKeyBase="flavor"
-                />
+                <FlavorSelector slots={2} labels={["Mitad Izquierda", "Mitad Derecha"]} selections={selections} setSelections={setSelections} activeFlavorSlot={activeFlavorSlot} setActiveFlavorSlot={setActiveFlavorSlot} pizzaOptions={pizzaOptions} currentProductKeyBase="flavor" />
                 <OptionPills title="Refresco 2Lts" icon="fa-bottle-water" options={jarritosOptions} selected={selections.drink} onSelect={(val) => setSelections({...selections, drink: val})} />
             </div>
         );
