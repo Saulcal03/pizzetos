@@ -4,30 +4,41 @@ import { openProductModal, addCartItem, selectedGlobalSize } from '../../stores/
 export default function AddToCartBtn({ product }) {
   
   const handleClick = () => {
-    // 1. Leemos el tamaño que está seleccionado arriba (ej. "Familiar")
     const currentSize = selectedGlobalSize.get();
 
-    // 2. LÓGICA INTELIGENTE:
-    // Si hay un tamaño seleccionado Y este producto tiene precio para ese tamaño (es una pizza)...
-    // ...lo agregamos DIRECTO al carrito con el precio correcto.
+    // 1. Lógica para pizzas con tamaño global (No tocamos nada aquí)
     if (currentSize && product.prices && product.prices[currentSize]) {
         const priceForSize = product.prices[currentSize];
-        
         addCartItem({
             ...product,
-            price: priceForSize,      // Ponemos el precio real (ej. 375)
-            priceFull: priceForSize,  // Importante para el descuento
-            size: currentSize         // Guardamos que es Familiar
+            price: priceForSize,
+            priceFull: priceForSize,
+            size: currentSize,
+            customDescription: product.description || ""
         });
-        return; // Terminamos aquí, NO abrimos el modal.
+        return;
     }
 
-    // 3. Si no hay tamaño seleccionado (o es un Paquete/Refresco), seguimos la lógica normal
+    // 2. Si es personalizable, abre el modal
     if (product.type === 'personalizable') {
         openProductModal(product);
-    } else {
-        // Si es fijo (ej. Papas), añadir directo
-        addCartItem(product);
+    } 
+    // 3. CAMBIO AQUÍ: Lógica para productos fijos con detección de tamaño
+    else {
+        // Buscamos el tamaño dentro de la descripción del producto
+        const desc = (product.description || "").toLowerCase();
+        let detectedSize = "General"; // Por defecto
+
+        if (desc.includes("familiar")) detectedSize = "Familiar";
+        else if (desc.includes("grande")) detectedSize = "Grande";
+        else if (desc.includes("rectangular")) detectedSize = "Rectangular";
+        else if (desc.includes("barra")) detectedSize = "Barra";
+
+        addCartItem({
+            ...product,
+            size: detectedSize, // Asigna el tamaño detectado o "General"
+            customDescription: product.description || ""
+        });
     }
   };
 

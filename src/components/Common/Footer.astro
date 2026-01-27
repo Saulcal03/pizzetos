@@ -1,6 +1,5 @@
 ---
 // src/components/Common/Footer.astro
-
 const currentYear = new Date().getFullYear();
 
 const socialLinks = [
@@ -16,103 +15,55 @@ const socialLinks = [
   }
 ];
 
-const quickLinks = [
-  { name: 'Menú', href: '#menu' },
-  { name: 'Paquetes', href: '#paquetes' },
-  { name: 'Sucursales', href: '#sucursales' },
-];
-
 const branches = [
     { name: 'Miraflores', phone: '55 8445 7355', href: 'tel:5584457355' },
     { name: 'Chalco', phone: '55 7395 9109', href: 'tel:5573959109' }
 ];
 ---
 
-{/* FOOTER GENERAL */}
-<footer class="bg-stone-100 border-t border-stone-200 pt-16 pb-24 md:pb-8 relative overflow-hidden font-body text-stone-600">
-    
+<footer class="bg-stone-100 border-t border-stone-200 pt-16 pb-32 md:pb-8 relative overflow-hidden font-body text-stone-600">
     <div class="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-3xl h-1 bg-gradient-to-r from-transparent via-amber-500/30 to-transparent opacity-50"></div>
 
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        
-        {/* GRID PRINCIPAL */}
         <div class="grid grid-cols-1 md:grid-cols-3 gap-12 mb-12">
-            
-            {/* --- COLUMNA 1: LOGO, FRASE Y REDES (CENTRADOS) --- */}
-            {/* AQUÍ HICE EL CAMBIO: Agregué 'flex flex-col items-center text-center' para centrar todo verticalmente */}
             <div class="space-y-6 flex flex-col items-center text-center">
-                
-                {/* Logo */}
                 <a href="#inicio" class="group block">
-                     <img 
-                        src="/3.png" 
-                        alt="Logo Pizzetos" 
-                        class="h-20 w-auto object-contain transition-transform duration-300 group-hover:scale-105" 
-                     />
+                     <img src="/3.png" alt="Logo Pizzetos" class="h-20 w-auto object-contain transition-transform duration-300 group-hover:scale-105" />
                 </a>
-
-                {/* Frase */}
-                <p class="text-stone-500 text-sm leading-relaxed max-w-xs font-medium">
-                    La pizza de tu vida.
-                </p>
-
-                {/* Redes Sociales */}
+                <p class="text-stone-500 text-sm leading-relaxed max-w-xs font-medium">La pizza de tu vida.</p>
                 <div class="flex gap-4">
                     {socialLinks.map(social => (
-                        <a 
-                            href={social.href}
-                            target="_blank"
-                            class="w-10 h-10 rounded-full bg-white border border-stone-200 shadow-sm flex items-center justify-center text-stone-400 hover:bg-amber-500 hover:text-white hover:border-amber-500 transition-all duration-300 hover:-translate-y-1"
-                            aria-label={social.name}
-                        >
-                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                                <path d={social.icon}></path>
-                            </svg>
+                        <a href={social.href} target="_blank" class="w-10 h-10 rounded-full bg-white border border-stone-200 shadow-sm flex items-center justify-center text-stone-400 hover:bg-amber-500 hover:text-white transition-all duration-300">
+                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d={social.icon}></path></svg>
                         </a>
                     ))}
                 </div>
             </div>
-            {/* -------------------------------------------------- */}
 
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-8">
+            <div class="grid grid-cols-2 gap-8">
                 <div>
-                    <h3 class="text-stone-900 font-bold text-lg mb-6 tracking-wide">Explorar</h3>
-                    <ul class="space-y-3">
-                        {quickLinks.map(link => (
-                            <li>
-                                <a href={link.href} class="text-stone-500 hover:text-amber-600 transition-colors duration-300 text-sm font-semibold">
-                                    {link.name}
-                                </a>
-                            </li>
-                        ))}
+                    <h3 class="text-stone-900 font-bold text-lg mb-6">Explorar</h3>
+                    <ul class="space-y-3 text-sm font-semibold">
+                        <li><a href="#menu" class="hover:text-amber-600">Menú</a></li>
+                        <li><a href="#paquetes" class="hover:text-amber-600">Paquetes</a></li>
+                        <li><a href="#sucursales" class="hover:text-amber-600">Sucursales</a></li>
                     </ul>
                 </div>
                 <div>
-                    <h3 class="text-stone-900 font-bold text-lg mb-6 tracking-wide">Horario</h3>
-                    <ul class="space-y-3 text-sm text-stone-500 font-medium">
-                        <li class="flex flex-col">
-                            <span class="font-bold text-amber-600">Lunes - Domingo</span>
-                            <span>11:00 AM - 10:00 PM</span>
-                        </li>
-                    </ul>
+                    <h3 class="text-stone-900 font-bold text-lg mb-6">Horario</h3>
+                    <p class="text-sm font-bold text-amber-600">Lunes - Domingo</p>
+                    <p class="text-sm text-stone-500">11:00 AM - 10:00 PM</p>
                 </div>
             </div>
 
             <div>
-                <h3 class="text-stone-900 font-bold text-lg mb-6 tracking-wide relative inline-block">
-                    Nuestras Sucursales
-                    <span class="absolute -bottom-2 left-0 w-8 h-1 bg-amber-500 rounded-full"></span>
-                </h3>
-                <div class="space-y-6">
+                <h3 class="text-stone-900 font-bold text-lg mb-6 relative">Nuestras Sucursales</h3>
+                <div class="space-y-4">
                     {branches.map(branch => (
-                        <div class="group">
-                            <h4 class="text-stone-800 font-bold text-base mb-1 group-hover:text-amber-600 transition-colors">
-                                Pizzetos {branch.name}
-                            </h4>
-                            <a href={branch.href} class="flex items-center gap-2 text-stone-500 hover:text-stone-900 transition-colors text-sm font-medium">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-amber-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
-                                </svg>
+                        <div>
+                            <h4 class="text-stone-800 font-bold text-base">Pizzetos {branch.name}</h4>
+                            <a href={branch.href} class="text-stone-500 text-sm flex items-center gap-2">
+                                <svg class="h-4 w-4 text-amber-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" /></svg>
                                 {branch.phone}
                             </a>
                         </div>
@@ -121,58 +72,51 @@ const branches = [
             </div>
         </div>
 
-        <div class="border-t border-stone-200 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-stone-400 font-semibold">
-            <p>&copy; {currentYear} Pizzetos Pizza. Todos los derechos reservados.</p>
-            <p>Desarrollado por <a href="https://ollintem.com.mx" target="_blank" class="text-amber-500 font-bold hover:underline ml-1">Ollintem</a></p>
+        <div class="border-t border-stone-200 pt-8 flex flex-col md:flex-row justify-between items-center text-xs text-stone-400">
+            <p>&copy; {currentYear} Pizzetos Pizza.</p>
+            <p>Desarrollado por <a href="https://ollintem.com.mx" class="text-amber-500 font-bold">Ollintem</a></p>
         </div>
     </div>
 
-    {/* ============================================== */}
-    {/* 📱 BARRA DE NAVEGACIÓN MÓVIL (TIPO APP)        */}
-    {/* ============================================== */}
-    <div class="md:hidden fixed bottom-0 left-0 w-full bg-white border-t border-stone-200 z-[90] flex justify-around items-end py-3 px-2 shadow-[0_-5px_15px_rgba(0,0,0,0.08)]">
+    {/* --- BARRA MÓVIL APP --- */}
+    <nav class="md:hidden fixed bottom-0 left-0 w-full bg-white border-t border-stone-200 z-[100] flex justify-between items-center py-2 px-2 shadow-[0_-5px_20px_rgba(0,0,0,0.1)]">
         
-        {/* 1. MENÚ (Pizzas) */}
-        <a href="#menu" class="flex flex-col items-center gap-1 group w-16">
-            <div class="text-stone-400 group-hover:text-amber-500 transition-colors">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-                </svg>
-            </div>
-            <span class="text-[10px] font-bold text-stone-500 group-hover:text-amber-500 transition-colors">Pizzas</span>
+        <a href="#menu" class="flex flex-col items-center flex-1">
+            <svg class="h-6 w-6 text-stone-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" /></svg>
+            <span class="text-[10px] font-bold text-stone-500">Pizzas</span>
         </a>
 
-        {/* 2. PAQUETES (Caja) */}
-        <a href="#paquetes" class="flex flex-col items-center gap-1 group w-16">
-            <div class="text-stone-400 group-hover:text-amber-500 transition-colors">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
-                </svg>
-            </div>
-            <span class="text-[10px] font-bold text-stone-500 group-hover:text-amber-500 transition-colors">Paquetes</span>
+        <a href="#paquetes" class="flex flex-col items-center flex-1">
+            <svg class="h-6 w-6 text-stone-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" /></svg>
+            <span class="text-[10px] font-bold text-stone-500">Paquetes</span>
         </a>
 
-        {/* 3. SNACKS (Papitas) */}
-        <a href="#snacks" class="flex flex-col items-center gap-1 group w-16">
-            <div class="text-stone-400 group-hover:text-amber-500 transition-colors">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
-                </svg>
-            </div>
-            <span class="text-[10px] font-bold text-stone-500 group-hover:text-amber-500 transition-colors">Snacks</span>
+        {/* BOTÓN CENTRAL: ABRE EL CARRITO USANDO LA STORE */}
+        <button id="btn-cart-footer" class="flex flex-col items-center justify-center -translate-y-4 bg-amber-500 text-white w-16 h-16 rounded-full shadow-lg border-4 border-white active:scale-95 transition-transform">
+            <svg class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" /></svg>
+            <span class="text-[9px] font-black uppercase mt-0.5">Pedido</span>
+        </button>
+
+        <a href="#snacks" class="flex flex-col items-center flex-1">
+            <svg class="h-6 w-6 text-stone-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
+            <span class="text-[10px] font-bold text-stone-500">Snacks</span>
         </a>
 
-        {/* 4. SUCURSALES (Mapa) */}
-        <a href="#sucursales" class="flex flex-col items-center gap-1 group w-16">
-            <div class="text-stone-400 group-hover:text-amber-500 transition-colors">
-                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                 </svg>
-            </div>
-            <span class="text-[10px] font-bold text-stone-500 group-hover:text-amber-500 transition-colors">Sucursales</span>
+        <a href="#sucursales" class="flex flex-col items-center flex-1">
+            <svg class="h-6 w-6 text-stone-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /></svg>
+            <span class="text-[10px] font-bold text-stone-500">Sucursales</span>
         </a>
-
-    </div>
-
+    </nav>
 </footer>
+
+<script>
+  // Importamos la store directamente en el script del cliente
+  import { isCartOpen } from '../../stores/cartStore.js';
+
+  const cartBtn = document.getElementById('btn-cart-footer');
+  
+  cartBtn?.addEventListener('click', () => {
+    // Esto cambia el estado de la store a true y abre el carrito automáticamente
+    isCartOpen.set(true);
+  });
+</script>

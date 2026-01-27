@@ -53,6 +53,7 @@ const SelectionCard = ({ label, value, selected, onSelect, iconClass }) => (
     </button>
 );
 
+// --- COMPONENTE CORREGIDO PARA IOS ---
 const FlavorSelector = ({ slots, labels, selections, setSelections, activeFlavorSlot, setActiveFlavorSlot, pizzaOptions, currentProductKeyBase }) => {
     return (
       <div className="space-y-4">
@@ -95,14 +96,15 @@ const FlavorSelector = ({ slots, labels, selections, setSelections, activeFlavor
            })}
         </div>
 
-        {/* Grilla de Opciones */}
+        {/* Grilla de Opciones - CORRECCIÓN IOS */}
         <div>
            <label className="block text-xs font-bold text-stone-500 uppercase tracking-wider mb-2">
              <i className="fa-solid fa-pizza-slice text-amber-500 mr-2"></i>
              Elige sabor para: <span className="text-stone-800 font-black">Opción {activeFlavorSlot}</span>
            </label>
            
-           <div className="grid grid-cols-3 sm:grid-cols-4 gap-2 max-h-[250px] overflow-y-auto custom-scrollbar pr-1">
+           {/* Cambiado a 2 columnas en móvil y 4 en desktop para evitar amontonamiento */}
+           <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 max-h-[250px] overflow-y-auto custom-scrollbar pr-1">
              {pizzaOptions.map(pizza => {
                let currentSlotKey;
                if (slots === 1) currentSlotKey = currentProductKeyBase;
@@ -118,19 +120,27 @@ const FlavorSelector = ({ slots, labels, selections, setSelections, activeFlavor
                      if (activeFlavorSlot < slots) setActiveFlavorSlot(activeFlavorSlot + 1);
                    }}
                    className={`
-                     group relative rounded-lg overflow-hidden aspect-square border transition-all shadow-sm
+                     group relative rounded-lg overflow-hidden border transition-all shadow-sm min-w-0
                      ${isSelected ? 'border-amber-500 ring-2 ring-amber-500/50' : 'border-stone-200 opacity-90 hover:opacity-100 hover:border-amber-300'}
                    `}
                  >
-                   <img src={pizza.image} alt={pizza.name} className="w-full h-full object-cover" loading="lazy" />
-                   <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent p-2 flex items-end">
-                     <span className="text-[10px] font-bold text-white leading-tight drop-shadow-md">{pizza.name}</span>
+                   {/* Contenedor con Aspect Ratio Box para Safari */}
+                   <div className="aspect-square w-full relative">
+                      <img 
+                        src={pizza.image} 
+                        alt={pizza.name} 
+                        className="absolute inset-0 w-full h-full object-cover" 
+                        loading="lazy" 
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent p-2 flex items-end">
+                        <span className="text-[10px] font-bold text-white leading-tight line-clamp-2 text-left">{pizza.name}</span>
+                      </div>
+                      {isSelected && (
+                        <div className="absolute top-1 right-1 bg-amber-500 text-white w-5 h-5 rounded-full flex items-center justify-center text-[10px] shadow-lg border border-white z-20">
+                          <i className="fa-solid fa-check"></i>
+                        </div>
+                      )}
                    </div>
-                   {isSelected && (
-                     <div className="absolute top-1 right-1 bg-amber-500 text-white w-5 h-5 rounded-full flex items-center justify-center text-xs shadow-lg">
-                       <i className="fa-solid fa-check"></i>
-                     </div>
-                   )}
                  </button>
                );
              })}
@@ -159,7 +169,6 @@ export default function ProductModal() {
 
   if (!isOpen || !product) return null;
 
-  // --- LÓGICA DE PRECIOS Y TAMAÑOS ---
   const getActiveSize = () => {
     if (selections.size) return selections.size;
     if (product.prices) {
@@ -191,14 +200,11 @@ export default function ProductModal() {
     closeProductModal();
   };
 
-  // --- VARIABLES DE RESPALDO ---
   const jarritosOptions = opcionesRefrescos?.refrescos_2l || ["Pepsi", "Manzanita", "Sangría", "Mirinda", "7UP"];
   const refrescos355Options = opcionesRefrescos?.refrescos_355ml || ["Fanta", "Sprite", "Fresca", "Mundet"];
 
-  // --- RENDERIZADO DE FORMULARIOS ---
   const renderForm = () => {
     
-    // CASO: PAQUETE 2
     if (product.id === 'paquete-2') {
         return (
           <div className="space-y-6">
@@ -227,7 +233,6 @@ export default function ProductModal() {
                 <OptionPills title="Salsa Alitas" icon="fa-pepper-hot" options={["BBQ", "Mango Habanero"]} selected={selections.sideFlavor} onSelect={(val) => setSelections({...selections, sideFlavor: val})} />
             )}
             
-            {/* REFRESCO FIJO */}
             <div className="bg-white p-3 rounded-lg border border-stone-200 shadow-sm flex items-center gap-3">
                 <div className="w-8 h-8 rounded-full bg-amber-100 flex items-center justify-center text-amber-600">
                     <i className="fa-solid fa-bottle-water"></i>
@@ -241,7 +246,6 @@ export default function ProductModal() {
         );
     }
 
-    // CASO: PAQUETE 3
     if (product.id === 'paquete-3') {
         return (
           <div className="space-y-4">
@@ -270,7 +274,6 @@ export default function ProductModal() {
         );
     }
 
-    // PROMO MAGNO
     if (product.id === 'promo-magno') {
         return (
             <div className="space-y-4">
@@ -299,7 +302,6 @@ export default function ProductModal() {
         );
     }
 
-    // PIZZA RECTANGULAR
     if (product.id === 'pizza-rectangular') {
         return (
             <div className="space-y-4">
@@ -319,7 +321,6 @@ export default function ProductModal() {
         );
     }
 
-    // PIZZA BARRA
     if (product.id === 'pizza-barra') {
         return (
             <div className="space-y-4">
@@ -339,7 +340,6 @@ export default function ProductModal() {
         );
     }
 
-    // HAMBURGUESAS
     if (product.id.includes('hamburguesa')) {
         return (
             <div className="space-y-4">
@@ -349,7 +349,6 @@ export default function ProductModal() {
         );
     }
 
-    // COSTILLAS O ALITAS
     if (product.id.includes('costillas') || product.id.includes('alitas')) {
         return (
             <div className="space-y-4">
@@ -359,7 +358,6 @@ export default function ProductModal() {
         );
     }
 
-    // REFRESCOS INDIVIDUALES
     if (product.category === 'Bebidas') {
         let optionsList = [];
         if (product.id.includes('2lts')) optionsList = jarritosOptions;
@@ -373,7 +371,6 @@ export default function ProductModal() {
         );
     }
 
-    // PIZZA REGULAR
     if (product.prices) {
         return (
             <div className="space-y-6">
@@ -410,14 +407,8 @@ export default function ProductModal() {
 
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
-      
-      {/* Fondo semi-transparente (Mantenemos oscuro para resaltar el modal) */}
       <div className="absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity duration-300" onClick={closeProductModal}></div>
-      
-      {/* MODAL CLARO: bg-[#FFFBF2] */}
       <div className="relative bg-[#FFFBF2] border border-orange-100 rounded-3xl w-full max-w-lg p-0 shadow-2xl overflow-hidden animate-fade-in-up flex flex-col max-h-[90vh]">
-        
-        {/* HEADER: Blanco puro */}
         <div className="bg-white p-6 border-b border-orange-100 flex justify-between items-start shrink-0">
             <div>
                 <h3 className="text-2xl font-serif italic font-bold text-stone-800 mb-1">{product.name}</h3>
@@ -428,7 +419,6 @@ export default function ProductModal() {
                     <p className="text-stone-800 font-bold text-xl">${currentPrice}</p>
                 </div>
             </div>
-            {/* BOTÓN DE CERRAR (X) */}
             <button onClick={closeProductModal} className="w-10 h-10 rounded-full bg-stone-100 hover:bg-stone-200 flex items-center justify-center text-stone-400 hover:text-stone-600 transition-colors border border-stone-200">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-6 h-6">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
@@ -436,12 +426,10 @@ export default function ProductModal() {
             </button>
         </div>
 
-        {/* CONTENIDO: Fondo Crema */}
         <div className="p-6 overflow-y-auto custom-scrollbar flex-grow bg-[#FFFBF2]">
             {renderForm()}
         </div>
 
-        {/* FOOTER: Blanco Puro */}
         <div className="p-4 bg-white border-t border-orange-100 flex gap-3 shrink-0 shadow-[0_-5px_15px_rgba(0,0,0,0.02)]">
             <button onClick={closeProductModal} className="flex-1 py-3.5 rounded-xl border border-stone-200 text-stone-500 font-medium hover:bg-stone-50 hover:text-stone-800 transition active:scale-95">
                 Cancelar
@@ -454,7 +442,6 @@ export default function ProductModal() {
                 Agregar
             </button>
         </div>
-
       </div>
     </div>
   );
