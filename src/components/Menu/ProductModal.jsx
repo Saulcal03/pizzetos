@@ -4,11 +4,9 @@ import { isModalOpen, modalProduct, closeProductModal, addCartItem, selectedGlob
 import { menuItems, opcionesRefrescos } from '../../data/menuData'; 
 import { useState, useEffect, useMemo } from 'react';
 
-// --- COMPONENTES VISUALES EXTERNOS ---
-
+// --- COMPONENTES VISUALES ---
 const OptionPills = ({ title, options, selected, onSelect, icon }) => {
   if (!options || options.length === 0) return null;
-
   return (
     <div className="mb-4">
       <label className="block text-xs font-bold text-stone-500 uppercase tracking-wider mb-2 flex items-center gap-2">
@@ -145,8 +143,6 @@ const FlavorSelector = ({ slots, labels, selections, setSelections, activeFlavor
     );
 };
 
-// --- COMPONENTE PRINCIPAL ---
-
 export default function ProductModal() {
   const isOpen = useStore(isModalOpen);
   const product = useStore(modalProduct);
@@ -164,6 +160,20 @@ export default function ProductModal() {
 
   if (!isOpen || !product) return null;
 
+  const isSelectionIncomplete = () => {
+    if (product.id === 'paquete-2' && !selections.pizza) return true;
+    if (product.id === 'paquete-3' && (!selections.pizza1 || !selections.pizza2 || !selections.pizza3)) return true;
+    if (product.id === 'promo-magno' && !selections.flavor1) return true;
+    
+    if (['pizza-rectangular', 'pizza-barra'].includes(product.id) && !selections.drink) return true;
+    if (product.id.includes('hamburguesa') && !selections.drink) return true;
+    if ((product.id.includes('costillas') || product.id.includes('alitas')) && !selections.drink) return true;
+    
+    if (product.category === 'Bebidas' && !selections.flavor) return true;
+
+    return false;
+  };
+
   const getActiveSize = () => {
     if (selections.size) return selections.size;
     if (product.prices) {
@@ -176,21 +186,25 @@ export default function ProductModal() {
   };
 
   const activeSize = getActiveSize();
-
   let currentPrice = product.price;
   if (product.prices && activeSize && product.prices[activeSize]) {
       currentPrice = product.prices[activeSize];
   }
 
-  // --- LÓGICA DE ENVÍO ACTUALIZADA ---
   const handleSubmit = () => {
-    let displaySize = activeSize;
+    if (isSelectionIncomplete()) return;
 
-    // Asignación de nombres descriptivos para paquetes
-    if (product.id === 'paquete-2') displaySize = "Grande";
-    if (product.id === 'paquete-3') displaySize = "Grande";
-    if (product.id === 'promo-magno') displaySize = "Familiar";
-    if (product.id === 'pizza-rectangular') displaySize = "Familiar";
+    let displaySize = activeSize;
+    let finalSelections = { ...selections };
+
+    // --- LÓGICA PARA INCLUIR JARRITO EN EL CARRITO AUTOMÁTICAMENTE ---
+    const paquetesConJarrito = ['paquete-1', 'paquete-2', 'paquete-3', 'promo-magno'];
+    if (paquetesConJarrito.includes(product.id)) {
+        finalSelections.drink = "Refresco Jarrito";
+    }
+
+    if (['paquete-1', 'paquete-2', 'paquete-3'].includes(product.id)) displaySize = "Grande";
+    if (['promo-magno', 'pizza-rectangular'].includes(product.id)) displaySize = "Familiar";
     if (product.id === 'pizza-barra') displaySize = "Barra";
 
     const finalItem = {
@@ -198,8 +212,9 @@ export default function ProductModal() {
       price: currentPrice,
       priceFull: currentPrice,
       size: displaySize, 
-      selections: { ...selections, size: displaySize },
-      customDescription: Object.values(selections).filter(Boolean).join(', ')
+      selections: { ...finalSelections, size: displaySize },
+      description: product.description, // Agregado para el mensaje de WhatsApp
+      customDescription: Object.values(finalSelections).filter(Boolean).join(', ')
     };
     addCartItem(finalItem);
     closeProductModal();
@@ -209,7 +224,6 @@ export default function ProductModal() {
   const refrescos355Options = opcionesRefrescos?.refrescos_355ml || ["Fanta", "Sprite", "Fresca", "Mundet"];
 
   const renderForm = () => {
-    // Los bloques if (product.id === ...) se mantienen iguales para el renderizado
     if (product.id === 'paquete-2') {
         return (
           <div className="space-y-6">
@@ -232,7 +246,7 @@ export default function ProductModal() {
                 </div>
                 <div>
                     <p className="text-stone-800 text-sm font-bold">Incluye: Refresco Jarrito</p>
-                    <p className="text-stone-500 text-xs">Sabor incluido en el paquete</p>
+                    <p className="text-stone-500 text-xs text-amber-600 font-bold">Por favor, indícanos el sabor en notas al final</p>
                 </div>
             </div>
           </div>
@@ -250,7 +264,6 @@ export default function ProductModal() {
                 </div>
                 <div>
                     <p className="text-stone-800 text-sm font-bold">Incluye: Refresco Jarrito</p>
-                    <p className="text-stone-500 text-xs">Sabor incluido en el paquete</p>
                 </div>
             </div>
           </div>
@@ -268,60 +281,38 @@ export default function ProductModal() {
                     </div>
                     <div>
                         <p className="text-stone-800 text-sm font-bold">Incluye: Refresco Jarrito</p>
-                        <p className="text-stone-500 text-xs">Sabor incluido en el paquete</p>
                     </div>
                 </div>
             </div>
         );
     }
 
-    if (product.id === 'pizza-rectangular') {
+    if (product.id === 'pizza-rectangular' || product.id === 'pizza-barra') {
+        const slots = product.id === 'pizza-rectangular' ? 4 : 2;
         return (
             <div className="space-y-4">
-                <p className="text-xs text-amber-600 font-bold uppercase mb-2">Elige las 4 esquinas:</p>
-                <FlavorSelector slots={4} labels={["Esp. 1", "Esp. 2", "Esp. 3", "Esp. 4"]} selections={selections} setSelections={setSelections} activeFlavorSlot={activeFlavorSlot} setActiveFlavorSlot={setActiveFlavorSlot} pizzaOptions={pizzaOptions} currentProductKeyBase="flavor" />
-                <OptionPills title="Refresco 2Lts" icon="fa-bottle-water" options={jarritosOptions} selected={selections.drink} onSelect={(val) => setSelections({...selections, drink: val})} />
+                <p className="text-xs text-amber-600 font-bold uppercase mb-2">Configura tu Pizza:</p>
+                <FlavorSelector slots={slots} labels={slots === 4 ? ["Esp. 1", "Esp. 2", "Esp. 3", "Esp. 4"] : ["Mitad Izq", "Mitad Der"]} selections={selections} setSelections={setSelections} activeFlavorSlot={activeFlavorSlot} setActiveFlavorSlot={setActiveFlavorSlot} pizzaOptions={pizzaOptions} currentProductKeyBase="flavor" />
+                <OptionPills title="Refresco 2Lts (OBLIGATORIO)" icon="fa-bottle-water" options={jarritosOptions} selected={selections.drink} onSelect={(val) => setSelections({...selections, drink: val})} />
             </div>
         );
     }
 
-    if (product.id === 'pizza-barra') {
+    if (product.id.includes('hamburguesa') || product.id.includes('costillas') || product.id.includes('alitas')) {
         return (
             <div className="space-y-4">
-                <p className="text-xs text-amber-600 font-bold uppercase mb-2">Elige las 2 mitades:</p>
-                <FlavorSelector slots={2} labels={["Mitad Izquierda", "Mitad Derecha"]} selections={selections} setSelections={setSelections} activeFlavorSlot={activeFlavorSlot} setActiveFlavorSlot={setActiveFlavorSlot} pizzaOptions={pizzaOptions} currentProductKeyBase="flavor" />
-                <OptionPills title="Refresco 2Lts" icon="fa-bottle-water" options={jarritosOptions} selected={selections.drink} onSelect={(val) => setSelections({...selections, drink: val})} />
-            </div>
-        );
-    }
-
-    if (product.id.includes('hamburguesa')) {
-        return (
-            <div className="space-y-4">
-                 <OptionPills title="Tipo de Carne" icon="fa-drumstick-bite" options={["Res", "Pollo"]} selected={selections.meat} onSelect={(val) => setSelections({...selections, meat: val})} />
-                 <OptionPills title="Refresco 355ml" icon="fa-bottle-water" options={refrescos355Options} selected={selections.drink} onSelect={(val) => setSelections({...selections, drink: val})} />
-            </div>
-        );
-    }
-
-    if (product.id.includes('costillas') || product.id.includes('alitas')) {
-        return (
-            <div className="space-y-4">
-                 <OptionPills title="Salsa" icon="fa-pepper-hot" options={["BBQ", "Mango Habanero"]} selected={selections.flavor} onSelect={(val) => setSelections({...selections, flavor: val})} />
-                 <OptionPills title="Refresco 355ml" icon="fa-bottle-water" options={refrescos355Options} selected={selections.drink} onSelect={(val) => setSelections({...selections, drink: val})} />
+                 {product.id.includes('hamburguesa') && <OptionPills title="Tipo de Carne" icon="fa-drumstick-bite" options={["Res", "Pollo"]} selected={selections.meat} onSelect={(val) => setSelections({...selections, meat: val})} />}
+                 {(product.id.includes('costillas') || product.id.includes('alitas')) && <OptionPills title="Salsa" icon="fa-pepper-hot" options={["BBQ", "Mango Habanero"]} selected={selections.flavor} onSelect={(val) => setSelections({...selections, flavor: val})} />}
+                 <OptionPills title="Refresco 355ml (OBLIGATORIO)" icon="fa-bottle-water" options={refrescos355Options} selected={selections.drink} onSelect={(val) => setSelections({...selections, drink: val})} />
             </div>
         );
     }
 
     if (product.category === 'Bebidas') {
-        let optionsList = [];
-        if (product.id.includes('2lts')) optionsList = jarritosOptions;
-        else if (product.id.includes('600ml')) optionsList = opcionesRefrescos?.refrescos_600ml || ["Pepsi", "Manzanita"];
-        else optionsList = refrescos355Options;
-
+        let optionsList = product.id.includes('2lts') ? jarritosOptions : product.id.includes('600ml') ? (opcionesRefrescos?.refrescos_600ml || ["Pepsi"]) : refrescos355Options;
         return (
             <div className="space-y-4">
-                 <OptionPills title="Elige Sabor" icon="fa-bottle-water" options={optionsList} selected={selections.flavor} onSelect={(val) => setSelections({...selections, flavor: val})} />
+                 <OptionPills title="Elige Sabor (OBLIGATORIO)" icon="fa-bottle-water" options={optionsList} selected={selections.flavor} onSelect={(val) => setSelections({...selections, flavor: val})} />
             </div>
         );
     }
@@ -360,10 +351,13 @@ export default function ProductModal() {
     return <div className="py-2 text-center text-stone-400">Producto simple. ¿Agregar al carrito?</div>;
   };
 
+  const isIncomplete = isSelectionIncomplete();
+
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
       <div className="absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity duration-300" onClick={closeProductModal}></div>
       <div className="relative bg-[#FFFBF2] border border-orange-100 rounded-3xl w-full max-w-lg p-0 shadow-2xl overflow-hidden animate-fade-in-up flex flex-col max-h-[90vh]">
+        {/* Header */}
         <div className="bg-white p-6 border-b border-orange-100 flex justify-between items-start shrink-0">
             <div>
                 <h3 className="text-2xl font-serif italic font-bold text-stone-800 mb-1">{product.name}</h3>
@@ -374,27 +368,32 @@ export default function ProductModal() {
                     <p className="text-stone-800 font-bold text-xl">${currentPrice}</p>
                 </div>
             </div>
-            <button onClick={closeProductModal} className="w-10 h-10 rounded-full bg-stone-100 hover:bg-stone-200 flex items-center justify-center text-stone-400 hover:text-stone-600 transition-colors border border-stone-200">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-6 h-6">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-                </svg>
+            <button onClick={closeProductModal} className="w-10 h-10 rounded-full bg-stone-100 flex items-center justify-center text-stone-400 hover:text-stone-600 border border-stone-200">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-6 h-6"><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
             </button>
         </div>
 
+        {/* Body */}
         <div className="p-6 overflow-y-auto custom-scrollbar flex-grow bg-[#FFFBF2]">
             {renderForm()}
         </div>
 
-        <div className="p-4 bg-white border-t border-orange-100 flex gap-3 shrink-0 shadow-[0_-5px_15px_rgba(0,0,0,0.02)]">
-            <button onClick={closeProductModal} className="flex-1 py-3.5 rounded-xl border border-stone-200 text-stone-500 font-medium hover:bg-stone-50 hover:text-stone-800 transition active:scale-95">
+        {/* Footer */}
+        <div className="p-4 bg-white border-t border-orange-100 flex gap-3 shrink-0">
+            <button onClick={closeProductModal} className="flex-1 py-3.5 rounded-xl border border-stone-200 text-stone-500 font-medium hover:bg-stone-50">
                 Cancelar
             </button>
             <button 
+                disabled={isIncomplete}
                 onClick={handleSubmit}
-                className="flex-[2] py-3.5 rounded-xl bg-[#25D366] hover:bg-[#20bd5a] text-white font-bold transition shadow-lg shadow-green-500/30 flex items-center justify-center gap-2 active:scale-95"
+                className={`
+                    flex-[2] py-3.5 rounded-xl font-bold transition shadow-lg flex items-center justify-center gap-2 active:scale-95
+                    ${isIncomplete 
+                        ? 'bg-stone-300 cursor-not-allowed text-stone-500' 
+                        : 'bg-[#25D366] hover:bg-[#20bd5a] text-white shadow-green-500/30'}
+                `}
             >
-                <i className="fa-solid fa-check"></i>
-                Agregar
+                {isIncomplete ? 'Faltan opciones' : <><i className="fa-solid fa-check"></i> Agregar</>}
             </button>
         </div>
       </div>

@@ -1,3 +1,4 @@
+// src/components/Cart/CheckoutModal.jsx
 import { useStore } from '@nanostores/react';
 import { isCheckoutOpen, toggleCheckout, groupedCart, clearCart } from '../../stores/cartStore';
 import { useState } from 'react';
@@ -59,9 +60,8 @@ export default function CheckoutModal() {
     if (!sucursalData) return;
     
     setIsSending(true);
-    await updateCounter(formData.sucursal);
 
-    // --- CONSTRUCCIÓN DEL MENSAJE CON EMOJIS COMPATIBLES ---
+    // --- CONSTRUCCIÓN DEL MENSAJE ---
     let message = `*NUEVO PEDIDO - ${sucursalData.nombre.toUpperCase()}*%0A%0A`;
     message += `*DATOS DEL CLIENTE*%0A`;
     message += `Nombre: ${formData.nombre}%0A`;
@@ -75,12 +75,28 @@ export default function CheckoutModal() {
       if (item.type === 'promo_pair') {
         message += `%0A- PROMO 2x1 (${item.size}) - $${item.price}%0A`;
         item.items.forEach((pizza, idx) => {
-          message += `  ${idx + 1}. ${pizza.name}${pizza.orillaQueso ? ' (+Orilla Queso)' : ''}%0A`;
+          message += `     ${idx + 1}. ${pizza.name}${pizza.orillaQueso ? ' (+Orilla Queso)' : ''}%0A`;
         });
       } else {
         message += `%0A- ${item.name.toUpperCase()}%0A`;
+        
+        // --- DESCRIPCIÓN "INVISIBLE" PARA PAQUETE 1 EN WHATSAPP ---
+        if (item.name.toUpperCase() === 'PAQUETE 1') {
+          message += `  _Pizza Hawaiana y Pepperoni (2x1) + 1 Refresco Jarrito_%0A`;
+        }
+
         if (item.size && item.size !== 'General') message += `  Tamaño: ${item.size}%0A`;
-        if (item.customDescription) message += `  Det: ${item.customDescription}%0A`;
+
+        const selections = item.selections || {};
+        const refrescoElegido = selections.drink || (item.category === 'Bebidas' ? selections.flavor : null);
+        const especialidades = Object.entries(selections)
+          .filter(([key, value]) => key !== 'drink' && key !== 'size' && value !== refrescoElegido && value)
+          .map(([_, value]) => value)
+          .join(', ');
+
+        if (especialidades) message += `  Especialidades: ${especialidades}%0A`;
+        if (refrescoElegido) message += `  Refresco: ${refrescoElegido}%0A`;
+        
         if (item.orillaQueso) message += `  + Orilla de Queso%0A`;
         message += `  *Subtotal: $${item.price}*%0A`;
       }
@@ -97,8 +113,11 @@ export default function CheckoutModal() {
     message += `%0A*TOTAL A PAGAR: $${total}*%0A`;
     message += `%0A_Pedido enviado desde la web Pizzetos_`;
 
-    // Abrir WhatsApp con el mensaje codificado
+    // --- MEJORA: ABRIR WHATSAPP ANTES DEL AWAIT PARA EVITAR BLOQUEOS ---
     window.open(`https://wa.me/${sucursalData.telefono}?text=${message}`, '_blank');
+
+    // Ejecutar el contador después de abrir la ventana
+    await updateCounter(formData.sucursal);
     
     setIsSending(false);
     clearCart(); 
@@ -115,27 +134,45 @@ export default function CheckoutModal() {
         <div className="bg-white p-6 md:w-2/5 border-r border-orange-50 flex flex-col justify-between shadow-sm">
           <div>
             <h3 className="text-amber-600 font-bold text-xs uppercase tracking-widest mb-4">Resumen</h3>
-            <div className="space-y-4 max-h-[250px] overflow-y-auto custom-scrollbar pr-2">
+            <div className="space-y-4 max-h-[400px] overflow-y-auto custom-scrollbar pr-2">
               {items.map(item => (
                 <div key={item.uniqueId} className="flex flex-col border-b border-gray-100 pb-3 last:border-0">
                   <div className="flex justify-between items-start mb-1">
-                    <span className="font-bold text-gray-800 text-sm pr-2 leading-tight">{item.name}</span>
+                    <span className="font-bold text-gray-800 text-sm pr-2 leading-tight">
+                      {item.type === 'promo_pair' ? `PROMO 2X1 (${item.size})` : item.name}
+                    </span>
                     <span className="text-amber-600 font-bold text-sm">${item.price}</span>
                   </div>
-                  {item.size && item.size !== "General" && (
-                    <span className="text-[10px] bg-amber-100 text-amber-800 px-2 py-0.5 rounded-full w-fit font-bold uppercase mb-1">
-                      {item.size}
-                    </span>
-                  )}
-                  {item.orillaQueso && (
-                    <span className="text-[10px] text-orange-600 font-bold flex items-center gap-1 mb-1">
-                      + Orilla de Queso
-                    </span>
-                  )}
-                  {item.customDescription && (
-                    <p className="text-[10px] text-gray-500 italic pl-2 border-l-2 border-amber-300">
-                      {item.customDescription}
-                    </p>
+
+                  {item.type === 'promo_pair' ? (
+                    <div className="ml-2 space-y-2 mt-1">
+                      {item.items.map((pizza, idx) => (
+                        <div key={pizza.uniqueId} className="text-[11px] text-gray-600 bg-orange-50/50 p-1.5 rounded border border-orange-100">
+                          <span className="font-bold text-orange-700">{idx + 1}. {pizza.name}</span>
+                          {pizza.orillaQueso && (
+                            <span className="block text-orange-600 font-medium">+ Orilla de Queso</span>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <>
+                      {item.size && item.size !== "General" && (
+                        <span className="text-[10px] bg-amber-100 text-amber-800 px-2 py-0.5 rounded-full w-fit font-bold uppercase mb-1">
+                          {item.size}
+                        </span>
+                      )}
+                      {item.orillaQueso && (
+                        <span className="text-[10px] text-orange-600 font-bold flex items-center gap-1 mb-1">
+                          + Orilla de Queso
+                        </span>
+                      )}
+                      {item.customDescription && (
+                        <p className="text-[10px] text-gray-500 italic pl-2 border-l-2 border-amber-300">
+                          {item.customDescription}
+                        </p>
+                      )}
+                    </>
                   )}
                 </div>
               ))}
@@ -152,7 +189,7 @@ export default function CheckoutModal() {
           <div className="flex justify-between items-center mb-5">
             <h2 className="text-2xl font-serif text-gray-800">Finalizar Pedido</h2>
             <button onClick={() => toggleCheckout(false)} className="text-gray-400 hover:text-red-500 transition">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
             </button>
           </div>
 

@@ -27,14 +27,21 @@ export default function CartFlyout() {
     itemsArray.forEach(pizza => removeCartItem(pizza.uniqueId));
   };
 
-  // --- LÓGICA DE LA PROMO JARRITOS ---
-  const hasPromoPair = items.some(item => item.type === 'promo_pair');
-  const hasJarrito = items.some(item => item.id === 'jarritos-2lts-promo');
-  const showJarritoPromo = hasPromoPair && !hasJarrito;
+  // --- LÓGICA DE LA PROMO JARRITOS (CORREGIDA) ---
+  
+  // Verificamos si existe al menos una promoción de 2x1 activa
+  const tieneCombos2x1 = items.some(item => item.type === 'promo_pair');
+  
+  // Verificamos si ya existe el Jarrito con el ID específico de promoción en el carrito
+  const yaTieneJarritoPromo = items.some(item => item.id === 'jarritos-2lts-promo');
+  
+  // El banner se muestra solo si hay combos Y NO se ha añadido el jarrito de oferta
+  // Al añadir uno, la variable 'yaTieneJarritoPromo' será true y el banner se ocultará.
+  const showJarritoPromo = tieneCombos2x1 && !yaTieneJarritoPromo;
 
   const handleAddJarrito = () => {
     addCartItem({
-      id: 'jarritos-2lts-promo',
+      id: 'jarritos-2lts-promo', // ID único para controlar la promoción
       name: 'Refresco Jarritos 2 Lts (Promo)',
       price: 25, 
       category: 'Bebidas',
@@ -73,7 +80,7 @@ export default function CartFlyout() {
           ) : (
             items.map((item) => {
               
-              // --- CASO 1: PROMOCIÓN 2x1 (Mantiene orilla porque son Pizzas individuales) ---
+              // --- CASO 1: PROMOCIÓN 2x1 ---
               if (item.type === 'promo_pair') {
                 return (
                   <div key={item.uniqueId} className="bg-white rounded-xl border border-orange-200 shadow-sm relative overflow-hidden">
@@ -100,7 +107,6 @@ export default function CartFlyout() {
                                 </div>
                                 {pizza.customDescription && <p className="text-xs text-gray-500 mt-1 ml-8">{pizza.customDescription}</p>}
 
-                                {/* Orilla en 2x1 se queda porque son pizzas solas */}
                                 {PRECIOS_ORILLA[item.size] && (
                                     <div className="mt-2 ml-8">
                                         <label className="flex items-center space-x-2 cursor-pointer select-none group">
@@ -130,8 +136,6 @@ export default function CartFlyout() {
               const precioFinal = item.orillaQueso ? (item.price + costoOrilla) : item.price;
               const isPromoItem = item.id === 'jarritos-2lts-promo';
               
-              // LÓGICA: ¿Es una pizza individual? 
-              // Mostramos orilla SOLO si es categoría Pizzas y NO es un ID de paquete
               const showOrillaOption = item.category === 'Pizzas' && !item.id.includes('paquete') && !item.id.includes('promo');
 
               return (
@@ -161,7 +165,6 @@ export default function CartFlyout() {
                       </div>
                     </div>
 
-                    {/* SOLO SE MUESTRA SI ES PIZZA INDIVIDUAL (No paquetes) */}
                     {showOrillaOption && PRECIOS_ORILLA[item.size] && (
                       <div className="mt-3 pt-2 border-t border-dashed border-gray-100">
                         <label className="flex items-center space-x-2 cursor-pointer select-none">
@@ -189,15 +192,42 @@ export default function CartFlyout() {
           )}
         </div>
 
+        {/* BANNER DE PROMOCIÓN JARRITOS (SOLO APARECE SI CORRESPONDE) */}
+        {showJarritoPromo && (
+            <div className="px-5 pb-2">
+                <div 
+                  className="bg-gradient-to-r from-orange-400 to-amber-500 rounded-xl p-3 shadow-lg flex items-center justify-between text-white relative overflow-hidden group cursor-pointer" 
+                  onClick={handleAddJarrito}
+                >
+                    <div className="flex flex-col relative z-10">
+                        <span className="font-bold text-xs uppercase tracking-wider text-yellow-100">¡Oferta Especial Única!</span>
+                        <span className="font-medium text-[10px]">Añade 1 Jarritos 2L por tus combos</span>
+                    </div>
+                    <div className="flex items-center gap-3 relative z-10">
+                        <span className="font-serif italic text-2xl font-bold text-white drop-shadow-md">$25</span>
+                        <div className="bg-white text-orange-600 rounded-full p-1 shadow-md">
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                <path fillRule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clipRule="evenodd" />
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        )}
+
         {/* FOOTER */}
         <div className="p-6 bg-white border-t border-orange-100 pb-24 md:pb-6">
           <div className="flex justify-between items-end mb-4">
             <span className="text-gray-500 font-medium text-sm uppercase tracking-wide">Total</span>
-            <span className="font-serif italic text-4xl text-amber-600 font-medium">${total}</span>
+            <span className="text-3xl font-serif italic text-amber-600 font-medium">${total}</span>
           </div>
           
-          <button onClick={handleCheckout} disabled={items.length === 0} className={`w-full py-4 rounded-xl font-bold text-white shadow-lg flex items-center justify-center gap-2 transition-all ${items.length === 0 ? 'bg-gray-300 cursor-not-allowed' : 'bg-[#25D366] hover:bg-[#20bd5a]'}`}>
-             <span>Continuar con el Pedido</span>
+          <button 
+            onClick={handleCheckout} 
+            disabled={items.length === 0} 
+            className={`w-full py-4 rounded-xl font-bold text-white shadow-lg flex items-center justify-center gap-2 transition-all ${items.length === 0 ? 'bg-gray-300 cursor-not-allowed' : 'bg-[#25D366] hover:bg-[#20bd5a]'}`}
+          >
+              <span>Continuar con el Pedido</span>
           </button>
         </div>
       </aside>
