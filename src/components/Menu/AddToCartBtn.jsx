@@ -3,8 +3,28 @@ import { openProductModal, addCartItem, selectedGlobalSize } from '../../stores/
 
 export default function AddToCartBtn({ product }) {
   
-  const handleClick = () => {
+  // Agregamos 'e' para capturar el clic y sus coordenadas
+  const handleClick = (e) => {
     const currentSize = selectedGlobalSize.get();
+
+    // --- LÓGICA DE ANIMACIÓN ---
+    // 1. Verificamos si se va a agregar directo o si abre modal
+    // Se agrega directo si: (Tiene tamaño global seleccionado) O (NO es personalizable)
+    const seAgregaDirecto = (currentSize && product.prices && product.prices[currentSize]) || product.type !== 'personalizable';
+
+    if (seAgregaDirecto) {
+        const btn = e.currentTarget;
+        const rect = btn.getBoundingClientRect();
+        
+        // Disparamos el evento personalizado con las coordenadas del botón
+        window.dispatchEvent(new CustomEvent('trigger-add-to-cart-animation', {
+            detail: {
+                x: rect.left + rect.width / 2, // Centro X
+                y: rect.top + rect.height / 2  // Centro Y
+            }
+        }));
+    }
+    // ----------------------------
 
     // 1. Lógica para pizzas con tamaño global (No tocamos nada aquí)
     if (currentSize && product.prices && product.prices[currentSize]) {
@@ -23,7 +43,7 @@ export default function AddToCartBtn({ product }) {
     if (product.type === 'personalizable') {
         openProductModal(product);
     } 
-    // 3. CAMBIO AQUÍ: Lógica para productos fijos con detección de tamaño
+    // 3. Lógica para productos fijos con detección de tamaño
     else {
         // Buscamos el tamaño dentro de la descripción del producto
         const desc = (product.description || "").toLowerCase();

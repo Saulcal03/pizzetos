@@ -191,8 +191,24 @@ export default function ProductModal() {
       currentPrice = product.prices[activeSize];
   }
 
-  const handleSubmit = () => {
+  // --- MODIFICADO: Aceptamos 'e' para la animación ---
+  const handleSubmit = (e) => {
     if (isSelectionIncomplete()) return;
+    
+    // --- INICIO ANIMACIÓN ---
+    if (e && e.currentTarget) {
+        const btn = e.currentTarget;
+        const rect = btn.getBoundingClientRect();
+        
+        // Disparamos el evento personalizado con las coordenadas del botón verde
+        window.dispatchEvent(new CustomEvent('trigger-add-to-cart-animation', {
+            detail: {
+                x: rect.left + rect.width / 2, // Centro X
+                y: rect.top + rect.height / 2  // Centro Y
+            }
+        }));
+    }
+    // --- FIN ANIMACIÓN ---
 
     let displaySize = activeSize;
     let finalSelections = { ...selections };
@@ -204,7 +220,8 @@ export default function ProductModal() {
     }
 
     if (['paquete-1', 'paquete-2', 'paquete-3'].includes(product.id)) displaySize = "Grande";
-    if (['promo-magno', 'pizza-rectangular'].includes(product.id)) displaySize = "Familiar";
+    if (product.id === 'promo-magno') displaySize = "Familiar";
+    if (product.id === 'pizza-rectangular') displaySize = "Rectangular";
     if (product.id === 'pizza-barra') displaySize = "Barra";
 
     const finalItem = {
@@ -385,7 +402,8 @@ export default function ProductModal() {
             </button>
             <button 
                 disabled={isIncomplete}
-                onClick={handleSubmit}
+                // --- CAMBIO AQUÍ: Pasamos el evento 'e' ---
+                onClick={(e) => handleSubmit(e)}
                 className={`
                     flex-[2] py-3.5 rounded-xl font-bold transition shadow-lg flex items-center justify-center gap-2 active:scale-95
                     ${isIncomplete 

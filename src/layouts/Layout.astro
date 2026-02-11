@@ -9,6 +9,8 @@ import CartFlyout from '../components/Cart/CartFlyout.jsx';
 import ProductModal from '../components/Menu/ProductModal.jsx'; 
 // --- NUEVO: Importamos el CheckoutModal ---
 import CheckoutModal from '../components/Cart/CheckoutModal.jsx'; 
+// --- NUEVO: Importamos el componente de Animación (Este archivo lo crearemos después) ---
+import AddToCartAnimation from '../components/Common/AddToCartAnimation.jsx';
 
 const { title } = Astro.props;
 ---
@@ -38,6 +40,9 @@ const { title } = Astro.props;
     
     {/* --- NUEVO: Aquí va el Modal de Checkout para que funcione en toda la web --- */}
     <CheckoutModal client:load />
+
+    {/* --- NUEVO: Aquí va la capa de animación (El círculo volador) --- */}
+    <AddToCartAnimation client:load />
 
   </body>
 </html>

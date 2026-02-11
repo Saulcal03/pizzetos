@@ -46,7 +46,7 @@ export function addCartItem(item) {
     orillaQueso: false 
   }]);
   
-  isCartOpen.set(true); 
+  // SE ELIMINÓ LA LÍNEA QUE ABRÍA EL CARRITO AUTOMÁTICAMENTE
 }
 
 export function removeCartItem(uniqueId) {
