@@ -1,54 +1,62 @@
 ---
 // src/layouts/Layout.astro
-
-// 1. CORREGIMOS LAS RUTAS AQUÍ (Agregamos /Common/)
 import Navbar from '../components/Common/Navbar.astro';
 import Footer from '../components/Common/Footer.astro'; 
-
 import CartFlyout from '../components/Cart/CartFlyout.jsx';
 import ProductModal from '../components/Menu/ProductModal.jsx'; 
-// --- NUEVO: Importamos el CheckoutModal ---
 import CheckoutModal from '../components/Cart/CheckoutModal.jsx'; 
-// --- NUEVO: Importamos el componente de Animación (Este archivo lo crearemos después) ---
 import AddToCartAnimation from '../components/Common/AddToCartAnimation.jsx';
 
-const { title } = Astro.props;
+const { 
+  title, 
+  description = "La mejor pizza. ¡Haz tu pedido Online!",
+  image = "/LogoPizzetos.png" // <--- IMPORTANTE: Esta imagen debe ser de 1200x630 px
+} = Astro.props;
+
+const siteDomain = "https://www.pizzetos.com.mx"; // Tu dominio real
+const socialImageURL = new URL(image, siteDomain).href;
+const canonicalURL = new URL(Astro.url.pathname, siteDomain).href;
 ---
 
 <!doctype html>
-<html lang="es">
+<html lang="es" class="bg-neutral-950">
   <head>
     <meta charset="UTF-8" />
-    <meta name="description" content="Pizzetos Pizza - Sabor Artesanal" />
     <meta name="viewport" content="width=device-width" />
     <link rel="icon" type="image/png" href="/favicon.png" />
+    <meta name="generator" content={Astro.generator} />
+    
     <title>{title}</title>
+    <meta name="description" content={description} />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta property="og:image" content={socialImageURL} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonicalURL} />
     
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
   </head>
   
-  <body class="bg-neutral-950 text-white font-body">
+  <body class="bg-neutral-950 text-white font-body selection:bg-orange-600 selection:text-white">
     
     <Navbar />
     
-    <slot />
+    <main>
+       <slot />
+    </main>
 
     <Footer />
 
     <CartFlyout client:load />
     <ProductModal client:load />
-    
-    {/* --- NUEVO: Aquí va el Modal de Checkout para que funcione en toda la web --- */}
     <CheckoutModal client:load />
-
-    {/* --- NUEVO: Aquí va la capa de animación (El círculo volador) --- */}
     <AddToCartAnimation client:load />
 
   </body>
 </html>
 
 <style is:global>
-  /* Tus estilos globales básicos */
   :root {
     --font-heading: 'Playfair Display', serif;
     --font-body: 'Lato', sans-serif;
@@ -57,35 +65,9 @@ const { title } = Astro.props;
     scroll-behavior: smooth;
   }
   
-  /* Animaciones útiles */
-  @keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
-  }
-  @keyframes fadeInUp {
-    from { opacity: 0; transform: translateY(20px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-  
-  .animate-fadeIn {
-    animation: fadeIn 0.3s ease-out forwards;
-  }
-  .animate-fade-in-up {
-    animation: fadeInUp 0.4s ease-out forwards;
-  }
-  
-  /* Scrollbar personalizada para el modal */
-  .custom-scrollbar::-webkit-scrollbar {
-    width: 6px;
-  }
-  .custom-scrollbar::-webkit-scrollbar-track {
-    background: rgba(255, 255, 255, 0.05);
-  }
-  .custom-scrollbar::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.2);
-    border-radius: 10px;
-  }
-  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-    background: rgba(255, 255, 255, 0.4);
-  }
+  /* Scrollbar oscura para que combine */
+  ::-webkit-scrollbar { width: 8px; }
+  ::-webkit-scrollbar-track { background: #0a0a0a; }
+  ::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; }
+  ::-webkit-scrollbar-thumb:hover { background: #555; }
 </style>

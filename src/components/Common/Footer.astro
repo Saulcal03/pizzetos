@@ -1,5 +1,7 @@
 ---
 // src/components/Common/Footer.astro
+import CartCounter from './CartCounter.jsx'; // <--- 1. IMPORTAMOS EL CONTADOR
+
 const currentYear = new Date().getFullYear();
 
 const socialLinks = [
@@ -28,7 +30,7 @@ const branches = [
         <div class="grid grid-cols-1 md:grid-cols-3 gap-12 mb-12">
             <div class="space-y-6 flex flex-col items-center text-center">
                 <a href="#inicio" class="group block">
-                     <img src="/3.png" alt="Logo Pizzetos" class="h-20 w-auto object-contain transition-transform duration-300 group-hover:scale-105" />
+                      <img src="/3.png" alt="Logo Pizzetos" class="h-20 w-auto object-contain transition-transform duration-300 group-hover:scale-105" />
                 </a>
                 <p class="text-stone-500 text-sm leading-relaxed max-w-xs font-medium">La pizza de tu vida.</p>
                 <div class="flex gap-4">
@@ -92,12 +94,22 @@ const branches = [
         </a>
 
         {/* BOTÓN CENTRAL: ABRE EL CARRITO USANDO LA STORE */}
-<button id="btn-cart-footer" class="flex flex-col items-center justify-center -translate-y-4 bg-amber-500 text-white w-16 h-16 rounded-full shadow-lg border-4 border-white active:scale-95 transition-transform">
-    <svg id="mobile-cart-target" class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
-    </svg>
-    <span class="text-[9px] font-black uppercase mt-0.5">Pedido</span>
-</button>
+        {/* Agregamos 'relative' para posicionar el contador */}
+        <button id="btn-cart-footer" class="relative flex flex-col items-center justify-center -translate-y-4 bg-amber-500 text-white w-16 h-16 rounded-full shadow-lg border-4 border-white active:scale-95 transition-transform">
+            
+            {/* --- BURBUJA DE CONTADOR (NUEVO) --- */}
+            <div class="absolute top-0 right-0 transform -translate-y-1 translate-x-1">
+                <span class="bg-red-600 text-white text-[10px] font-bold h-6 w-6 flex items-center justify-center rounded-full border-2 border-white shadow-sm">
+                    <CartCounter client:load />
+                </span>
+            </div>
+
+            {/* Mantenemos el ID para la animación */}
+            <svg id="mobile-cart-target" class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+            </svg>
+            <span class="text-[9px] font-black uppercase mt-0.5">Pedido</span>
+        </button>
 
         <a href="#snacks" class="flex flex-col items-center flex-1">
             <svg class="h-6 w-6 text-stone-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
